@@ -1,0 +1,29 @@
+body {
+  font-size: 20px;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+}
+
+#div_id {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+}
+
+input {
+  border: 0px none;
+  font-size: 3em;
+  margin: auto;
+}
+input:focus {
+  outline: none;
+}
+
+input[type=submit] {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+}
+

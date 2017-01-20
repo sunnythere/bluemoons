@@ -1,0 +1,26 @@
+const Tone = require('Tone')
+
+const synth = new Tone.Synth();
+synth.toMaster()
+
+
+
+
+const pattern = new Tone.Pattern( (time, note) {
+
+})
+
+
+const convert = (str) => {
+  for (var x = 0; x < str.length; x++) {
+    if (['a', 'b', 'c', 'd', 'e', 'f', 'g'].includes(str[x]) {
+      //note
+    } else if (str[x].match(/[!.?]/)) {
+      //rest
+    } else {
+      //duration
+    }
+  }
+}
+
+
