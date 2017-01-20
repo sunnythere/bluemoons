@@ -24,3 +24,8 @@ const convert = (str) => {
 }
 
 
+Tone.Frequency("A4").harmonize([0, 3, 7]); //["A4", "C5", "E5"]
+
+
+arrrbcrdrrerrrrfg
+A4, [[B4], C4, [D4]]

@@ -56,24 +56,29 @@
 	
 	var _reactRouter = __webpack_require__(178);
 	
-	var _Main = __webpack_require__(269);
+	var _Main = __webpack_require__(233);
 	
 	var _Main2 = _interopRequireDefault(_Main);
 	
-	var _Field = __webpack_require__(271);
+	var _Field = __webpack_require__(235);
 	
 	var _Field2 = _interopRequireDefault(_Field);
+	
+	var _Options = __webpack_require__(236);
+	
+	var _Options2 = _interopRequireDefault(_Options);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	_reactDom2.default.render(_react2.default.createElement(
-	   _reactRouter.Router,
-	   { history: _reactRouter.browserHistory },
-	   _react2.default.createElement(
-	      _reactRouter.Route,
-	      { path: '/', component: _Main2.default },
-	      _react2.default.createElement(_reactRouter.Route, { path: '/field', component: _Field2.default })
-	   )
+	     _reactRouter.Router,
+	     { history: _reactRouter.browserHistory },
+	     _react2.default.createElement(
+	          _reactRouter.Route,
+	          { path: '/', component: _Main2.default },
+	          _react2.default.createElement(_reactRouter.Route, { path: '/field', component: _Field2.default }),
+	          _react2.default.createElement(_reactRouter.Route, { path: '/options', component: _Options2.default })
+	     )
 	), document.getElementById('anchor'));
 
 /***/ },
@@ -26536,43 +26541,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 233 */,
-/* 234 */,
-/* 235 */,
-/* 236 */,
-/* 237 */,
-/* 238 */,
-/* 239 */,
-/* 240 */,
-/* 241 */,
-/* 242 */,
-/* 243 */,
-/* 244 */,
-/* 245 */,
-/* 246 */,
-/* 247 */,
-/* 248 */,
-/* 249 */,
-/* 250 */,
-/* 251 */,
-/* 252 */,
-/* 253 */,
-/* 254 */,
-/* 255 */,
-/* 256 */,
-/* 257 */,
-/* 258 */,
-/* 259 */,
-/* 260 */,
-/* 261 */,
-/* 262 */,
-/* 263 */,
-/* 264 */,
-/* 265 */,
-/* 266 */,
-/* 267 */,
-/* 268 */,
-/* 269 */
+/* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26587,13 +26556,17 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _tone = __webpack_require__(270);
+	var _tone = __webpack_require__(234);
 	
 	var _tone2 = _interopRequireDefault(_tone);
 	
-	var _Field = __webpack_require__(271);
+	var _Field = __webpack_require__(235);
 	
 	var _Field2 = _interopRequireDefault(_Field);
+	
+	var _Options = __webpack_require__(236);
+	
+	var _Options2 = _interopRequireDefault(_Options);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -26613,47 +26586,97 @@
 	
 	    _this.state = {
 	      text: '',
-	      musicArr: []
+	      musicArr: [],
+	      bpm: 120,
+	      ramp: 0,
+	      optionsClicked: false
 	    };
-	    // this.makeTone = this.makeTone.bind(this)
-	    // this.makeMusicNotes = this.makeMusicNotes.bind(this)
+	
 	    _this.writeText = _this.writeText.bind(_this);
 	    _this.handleSubmit = _this.handleSubmit.bind(_this);
+	
+	    _this.toggleOptionsPanel = _this.toggleOptionsPanel.bind(_this);
+	    _this.watchBPM = _this.watchBPM.bind(_this);
+	    _this.stopTone = _this.stopTone.bind(_this);
 	    return _this;
 	  }
+	
+	  // creates synth and sequence
+	
 	
 	  _createClass(Main, [{
 	    key: 'makeTone',
 	    value: function makeTone(notesArr) {
 	      var tone = new _tone2.default.Synth().toMaster();
-	      var pattern = new _tone2.default.Pattern(function (time, note) {
-	        tone.triggerAttackRelease(note, 0.25);
-	      }, notesArr);
-	      pattern.start(1);
+	      var pattern = new _tone2.default.Sequence(function (time, note) {
+	        tone.triggerAttackRelease(note, "4n", time);
+	      }, notesArr, "4n");
+	
+	      pattern.start(0);
+	      pattern.loop = false;
 	      _tone2.default.Transport.loop = false;
 	    }
 	
-	    //   let synth = new SimpleSynth()
-	    //   this.pattern = new Tone.Pattern( (time, note) => {
-	    //   this.synth.triggerAttackRelease(note, 0.25)
-	    // }, this.state.musicArr);
-	
-	    // }
+	    // stops play
 	
 	  }, {
-	    key: 'makeMusicNotes',
-	    value: function makeMusicNotes(str) {
+	    key: 'stopTone',
+	    value: function stopTone() {
+	      _tone2.default.Transport.stop();
+	    }
+	
+	    // harmonize
+	
+	  }, {
+	    key: 'makeHarmony',
+	    value: function makeHarmony(note) {
+	      var harmonized = _tone2.default.Frequency(note).harmonize([0, 3, 7]); //["A4", "C5", "E5"]
+	    }
+	
+	    //onChange for BPM slide
+	
+	  }, {
+	    key: 'watchBPM',
+	    value: function watchBPM(e) {
+	      var bpm = e.target.value;
+	      this.setState({ bpm: bpm });
+	      console.log('bpm ', bpm);
+	      _tone2.default.Transport.bpm.value = bpm;
+	    }
+	  }, {
+	    key: 'makeMusicNotes_wordNote',
+	    value: function makeMusicNotes_wordNote(str) {
 	
 	      var musicNotes = [];
+	      var oneNote = [];
+	      var upperCase = '';
 	
 	      for (var x = 0; x < str.length; x++) {
-	        if (['A', 'B', 'C', 'D', 'E', 'F', 'G'].includes(str[x].toUpperCase())) {
-	          musicNotes.push(str[x].toUpperCase() + '4');
-	          // } else if (str[x].match(/[!.?]/)) {
-	          //   //rest
-	          // } else {
-	          //duration
+	
+	        var letter = str[x];
+	
+	        if (['A', 'B', 'C', 'D', 'E', 'F', 'G'].includes(letter)) {
+	          oneNote.push(letter + '3');
+	        } else if (['a', 'b', 'c', 'd', 'e', 'f', 'g'].includes(letter)) {
+	          upperCase = oneNote.push(letter + '4');
+	        } else if (letter === ' ') {
+	          if (oneNote.length) {
+	            musicNotes.push(oneNote);
+	            oneNote = [];
+	          }
+	        } else if (letter.match(/[!.?]/)) {
+	          if (oneNote.length) {
+	            musicNotes.push(oneNote, []);
+	            oneNote = [];
+	          }
+	        } else {
+	          continue;
 	        }
+	      }
+	
+	      if (oneNote) musicNotes.push(oneNote);
+	      if (!musicNotes[musicNotes.length - 1].length) {
+	        musicNotes.pop();
 	      }
 	      this.setState({ musicArr: musicNotes });
 	      return musicNotes;
@@ -26669,15 +26692,19 @@
 	    value: function handleSubmit(event) {
 	      event.preventDefault();
 	
-	      console.log('this.state.text ', this.state.text);
-	
-	      var notes = this.makeMusicNotes(this.state.text);
-	
-	      console.log('this.state.musicArr ', this.state.musicArr);
+	      var notes = this.makeMusicNotes_wordNote(this.state.text);
+	      //const notes = this.makeMusicNotes("arrrbcrdrrerrrrfg")
 	
 	      this.makeTone(notes);
+	      console.log('this.state.musicArr ', this.state.musicArr);
+	
 	      //StartAudioContext(Tone.context, 'buttonElement').then(function() { })
 	      _tone2.default.Transport.start();
+	    }
+	  }, {
+	    key: 'toggleOptionsPanel',
+	    value: function toggleOptionsPanel() {
+	      this.setState({ optionsClicked: !this.state.optionsClicked });
 	    }
 	  }, {
 	    key: 'render',
@@ -26688,7 +26715,13 @@
 	        _react2.default.createElement(_Field2.default, {
 	          text: this.state.text,
 	          handleSubmit: this.handleSubmit,
-	          writeText: this.writeText })
+	          writeText: this.writeText }),
+	        _react2.default.createElement('button', { onClick: this.stopTone }),
+	        _react2.default.createElement('button', { onClick: this.toggleOptionsPanel }),
+	        this.state.optionsClicked && _react2.default.createElement(_Options2.default, {
+	
+	          watchBPM: this.watchBPM,
+	          bpm: this.state.bpm })
 	      );
 	    }
 	  }]);
@@ -26699,7 +26732,7 @@
 	exports.default = Main;
 
 /***/ },
-/* 270 */
+/* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;(function(root, factory){
@@ -48918,7 +48951,7 @@
 	}));
 
 /***/ },
-/* 271 */
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -48948,6 +48981,54 @@
 	        className: "input-field",
 	        autoFocus: true }),
 	      _react2.default.createElement("input", { type: "submit", tabIndex: "-1" })
+	    )
+	  );
+	};
+
+/***/ },
+/* 236 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	exports.default = function (props) {
+	
+	  return _react2.default.createElement(
+	    "div",
+	    { id: "div_options" },
+	    _react2.default.createElement(
+	      "div",
+	      null,
+	      _react2.default.createElement(
+	        "form",
+	        null,
+	        _react2.default.createElement(
+	          "fieldset",
+	          null,
+	          _react2.default.createElement(
+	            "legend",
+	            null,
+	            "bpm: ",
+	            props.bpm
+	          ),
+	          _react2.default.createElement("input", {
+	            type: "range",
+	            name: "points",
+	            value: props.bpm,
+	            onChange: props.watchBPM,
+	            min: "20", max: "250" })
+	        )
+	      )
 	    )
 	  );
 	};
