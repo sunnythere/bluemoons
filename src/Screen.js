@@ -10,7 +10,8 @@ export default class Screen extends React.Component {
       altText: [],
       altTextShow: [],
       letterClassA: 'underline',
-      letterClassB: 'letters'
+      letterClassB: 'letters',
+
     }
 
     //this.lineLetters = this.lineLetters.bind(this)
@@ -31,8 +32,6 @@ shouldComponentUpdate(nextProps, nextState) {
 componentWillReceiveProps(nextProps) {
 this.lineLetters(nextProps.text)
   console.log("Tone.Transport.position ", Tone.Transport.position)
-this.setState({ letterClassA : nextProps.letterClassA })
-  console.log("letterClassA", nextProps.letterClassA)
 }
 
 
@@ -46,13 +45,7 @@ lineLetters(text) {
     if (char.match(/[A-G]/i)) {
       altText.push(<span key={idx} className="underline">{char}</span>)
       oneNote.val = char
-    } else if (char.match(/\s/)) {
-        if (oneNote.val) {
-            altText.push(<span key={idx} className="underline2">{char}</span>)
-        } else {
-            altText.push(<span key={idx} className={this.state.letterClassB}>{char}</span>)
-        }
-    } else if (char.match(/[!.,;?]/)) {
+    } else if (char.match(/\s|[!.,;?]/)) {
       altText.push(<span key={idx} className={this.state.letterClassB}>{char}</span>)
       oneNote.val = ''
     } else {
@@ -65,62 +58,35 @@ lineLetters(text) {
 
     this.setState({ altText : altText })
 })
-    console.log('this.state.altText' ,this.state.altText)
+  //this.notate()
 }
 
 
 
-// notate(nextProps) {
+// notate() {
 // Tone.Transport.schedule((time) => {
-//     const textArr = (nextProps.text).split('')
-//     const altText = []
-//     let idx = 0
+//     const textArr = this.state.altText
+//     let altTextShow;
 
 // while (textArr.length) {
+//   Tone.Transport.scheduleRepeat((time) => {
 //   Tone.Draw.schedule(() => {
-//     console.log('hey')
-//     let char = textArr.shift()
+//     console.log('heyhey')
+//     let charSpan = textArr.shift()
 
-//       if (char.match(/[A-G]/i)) {
-//       altText.push(<span key={idx} className="letters underline">{char}</span>)
-//       } else {
-//         altText.push(<span key={idx} className="letters">{char}</span>)
-//       }
-//       this.setState({ altText: altText })
-//       console.log('altText state', this.state.altText)
-//       idx++
+//     altTextShow.push(charSpan)
+
+//     this.setState({ altTextShow: altTextShow })
+//       console.log('altTextShow state', this.state.altTextShow)
+
+//   }, time)
 //   }, '16n')
 // }
 
 // }, "0:0:1")
 // }
 
-notate(nextProps) {
-Tone.Transport.schedule((time) => {
-//     const textArr = (nextProps.text).split('')
-//     const altText = []
-//     let idx = 0
 
-    Tone.Draw.schedule(() => {
-      console.log('hey!!', Tone.Transport.position)
-    }, time)
-
-
-// while (textArr.length) {
-
-    // let char = textArr.shift()
-
-    //   if (char.match(/[A-G]/i)) {
-    //   altText.push(<span key={idx} className="letters underline">{char}</span>)
-    //   } else {
-    //     altText.push(<span key={idx} className="letters">{char}</span>)
-    //   }
-    //   this.setState({ altText: altText })
-    //   console.log('altText state', this.state.altText)
-    //   idx++
-
-}, "0:0:0")
-}
 
 render() {
 

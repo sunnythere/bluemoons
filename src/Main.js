@@ -24,7 +24,8 @@ constructor() {
     transportStop: true,
     inputTextVis: '1',
     letterClassA: 'underline',
-    letterClassB: 'letters'
+    letterClassB: 'letters',
+    voiceTitle: 'synth'
 
   };
 
@@ -35,6 +36,7 @@ constructor() {
   this.toggleBPMPanel = this.toggleBPMPanel.bind(this)
   this.onChangeBPM = this.onChangeBPM.bind(this)
   this.onChangeVoice = this.onChangeVoice.bind(this)
+  this.onSubmitVoice = this.onSubmitVoice.bind(this)
   this.stopTone = this.stopTone.bind(this)
   this.randomOctave = this.randomOctave.bind(this)
   // this.makeHarmony = this.makeHarmony.bind(this)
@@ -122,6 +124,7 @@ makeMusicNotes_Obj(str) {  //original BlueMoons translation formula
       musicNotes.push(oneNote)
   }
   this.setState({ musicArr: musicNotes })
+  console.log('musicNotes' , musicNotes)
   return musicNotes
 }
 
@@ -236,6 +239,23 @@ makeSynth2() {  //marimba
   }).toMaster()
 }
 
+makeSynth3() {
+  this.tone = new Tone.PolySynth(3, Tone.PluckySynth, {
+      "pitchDecay" : 0.1,
+      "octaves" : 10,
+      "oscillator" : {
+      "type" : "sine"
+    },
+      "envelope" : {
+      "attack" : 0.001,
+      "decay" : 0.8,
+      "sustain" :0.01,
+      "release" :2,
+      "attackCurve" :"exponential"
+      }
+  }).toMaster()
+}
+
 // creates synth and sequence
 makeSynthSeq(tone, notesArr) {
   let pattern = new Tone.Sequence( (time, note) => {
@@ -251,7 +271,7 @@ makeSynthPart(notesArr) {
 
     Tone.Draw.schedule(() => {
     console.log('hey!', Tone.Transport)
-      // ???
+      // ??? nothing works
 
   }, time)
 
@@ -290,6 +310,7 @@ toggleBPMPanel() {
 
 //watches BPM slide
 onChangeBPM(e) {
+  e.preventDefault()
   let bpm = e.target.value
   this.setState({ bpm: bpm })
   console.log('bpm ', bpm)
@@ -298,8 +319,11 @@ onChangeBPM(e) {
 
 //watches voice pulldown
 onChangeVoice(e) {
+  e.preventDefault()
   let voice = e.target.value
+  this.setState({ voiceTitle: voice })
   console.log('e.target.value ', e.target.value)
+
   switch (voice) {
     case 'synth':
     this.makeSynth()
@@ -313,9 +337,19 @@ onChangeVoice(e) {
     this.makeSynth2()
     break;
 
+    case 'pluck':
+    this.makeSynth3()
+    break;
+
     default:
     this.makeSynth()
   }
+}
+
+onSubmitVoice(e) {
+  e.preventDefault()
+  let voice = e.target.value
+  this.setState({ voice: voice })
 }
 
 writeText(event) {
@@ -328,21 +362,18 @@ disappearText() {
 }
 
 clearText() {
-  this.setState({ text: '' })
+  this.setState({ text: '', inputTextVis: '1'})
 }
 
 // ------------ PLAYS NOTES---------
 handleSubmit(event) {
   event.preventDefault()
-  // const notes = this.makeMusicNotes_wordNote(this.state.text)
-  const notes = this.makeMusicNotes_Obj1(this.state.text)
+
+  const notes = this.makeMusicNotes_Obj(this.state.text)
+  this.makeSynthPart(notes)
 
   this.setState({ returnKey: true })
 
-  //let chord = ['C4', 'E4', 'G4']
-
-  this.makeSynthPart(notes)
-  console.log('this.state.musicArr ', this.state.musicArr)
   Tone.Transport.start()
   this.setState({ transportStop: false })
 
@@ -372,7 +403,9 @@ render() {
         <button id="clear_btn" onClick={this.clearText} />
         {
           this.state.optionsClicked && <Options
-                      onChangeVoice={this.onChangeVoice}/>
+                      onSubmitVoice={this.onSubmitVoice}
+                      onChangeVoice={this.onChangeVoice}
+                      voice={this.state.voiceTitle}/>
         }
         {
           this.state.opBPMClicked && <BPM

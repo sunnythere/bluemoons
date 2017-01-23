@@ -26622,7 +26622,8 @@
 	      transportStop: true,
 	      inputTextVis: '1',
 	      letterClassA: 'underline',
-	      letterClassB: 'letters'
+	      letterClassB: 'letters',
+	      voiceTitle: 'synth'
 	
 	    };
 	
@@ -26633,6 +26634,7 @@
 	    _this.toggleBPMPanel = _this.toggleBPMPanel.bind(_this);
 	    _this.onChangeBPM = _this.onChangeBPM.bind(_this);
 	    _this.onChangeVoice = _this.onChangeVoice.bind(_this);
+	    _this.onSubmitVoice = _this.onSubmitVoice.bind(_this);
 	    _this.stopTone = _this.stopTone.bind(_this);
 	    _this.randomOctave = _this.randomOctave.bind(_this);
 	    // this.makeHarmony = this.makeHarmony.bind(this)
@@ -26727,6 +26729,7 @@
 	        musicNotes.push(oneNote);
 	      }
 	      this.setState({ musicArr: musicNotes });
+	      console.log('musicNotes', musicNotes);
 	      return musicNotes;
 	    }
 	  }, {
@@ -26851,6 +26854,24 @@
 	        }
 	      }).toMaster();
 	    }
+	  }, {
+	    key: 'makeSynth3',
+	    value: function makeSynth3() {
+	      this.tone = new _tone2.default.PolySynth(3, _tone2.default.PluckySynth, {
+	        "pitchDecay": 0.1,
+	        "octaves": 10,
+	        "oscillator": {
+	          "type": "sine"
+	        },
+	        "envelope": {
+	          "attack": 0.001,
+	          "decay": 0.8,
+	          "sustain": 0.01,
+	          "release": 2,
+	          "attackCurve": "exponential"
+	        }
+	      }).toMaster();
+	    }
 	
 	    // creates synth and sequence
 	
@@ -26877,7 +26898,7 @@
 	
 	        _tone2.default.Draw.schedule(function () {
 	          console.log('hey!', _tone2.default.Transport);
-	          // ???
+	          // ??? nothing works
 	        }, time);
 	      }, notesArr).start();
 	    }
@@ -26925,6 +26946,7 @@
 	  }, {
 	    key: 'onChangeBPM',
 	    value: function onChangeBPM(e) {
+	      e.preventDefault();
 	      var bpm = e.target.value;
 	      this.setState({ bpm: bpm });
 	      console.log('bpm ', bpm);
@@ -26936,8 +26958,11 @@
 	  }, {
 	    key: 'onChangeVoice',
 	    value: function onChangeVoice(e) {
+	      e.preventDefault();
 	      var voice = e.target.value;
+	      this.setState({ voiceTitle: voice });
 	      console.log('e.target.value ', e.target.value);
+	
 	      switch (voice) {
 	        case 'synth':
 	          this.makeSynth();
@@ -26951,9 +26976,20 @@
 	          this.makeSynth2();
 	          break;
 	
+	        case 'pluck':
+	          this.makeSynth3();
+	          break;
+	
 	        default:
 	          this.makeSynth();
 	      }
+	    }
+	  }, {
+	    key: 'onSubmitVoice',
+	    value: function onSubmitVoice(e) {
+	      e.preventDefault();
+	      var voice = e.target.value;
+	      this.setState({ voice: voice });
 	    }
 	  }, {
 	    key: 'writeText',
@@ -26969,7 +27005,7 @@
 	  }, {
 	    key: 'clearText',
 	    value: function clearText() {
-	      this.setState({ text: '' });
+	      this.setState({ text: '', inputTextVis: '1' });
 	    }
 	
 	    // ------------ PLAYS NOTES---------
@@ -26978,15 +27014,12 @@
 	    key: 'handleSubmit',
 	    value: function handleSubmit(event) {
 	      event.preventDefault();
-	      // const notes = this.makeMusicNotes_wordNote(this.state.text)
-	      var notes = this.makeMusicNotes_Obj1(this.state.text);
+	
+	      var notes = this.makeMusicNotes_Obj(this.state.text);
+	      this.makeSynthPart(notes);
 	
 	      this.setState({ returnKey: true });
 	
-	      //let chord = ['C4', 'E4', 'G4']
-	
-	      this.makeSynthPart(notes);
-	      console.log('this.state.musicArr ', this.state.musicArr);
 	      _tone2.default.Transport.start();
 	      this.setState({ transportStop: false });
 	
@@ -27016,7 +27049,9 @@
 	          _react2.default.createElement('button', { onClick: this.toggleBPMPanel, name: 'bpm' }),
 	          _react2.default.createElement('button', { id: 'clear_btn', onClick: this.clearText }),
 	          this.state.optionsClicked && _react2.default.createElement(_Options2.default, {
-	            onChangeVoice: this.onChangeVoice }),
+	            onSubmitVoice: this.onSubmitVoice,
+	            onChangeVoice: this.onChangeVoice,
+	            voice: this.state.voiceTitle }),
 	          this.state.opBPMClicked && _react2.default.createElement(_BPM2.default, {
 	            onChangeBPM: this.onChangeBPM,
 	            bpm: this.state.bpm })
@@ -51443,7 +51478,7 @@
 	      null,
 	      _react2.default.createElement(
 	        "form",
-	        null,
+	        { onSubmit: props.onSubmitVoice },
 	        _react2.default.createElement(
 	          "fieldset",
 	          null,
@@ -51451,15 +51486,15 @@
 	            "legend",
 	            null,
 	            "voice: ",
-	            props.instVal
+	            props.voice
 	          ),
 	          _react2.default.createElement(
 	            "select",
-	            { name: "instruments", value: props.instVal, onChange: props.onChangeVoice },
+	            { value: props.voice, onChange: props.onChangeVoice },
 	            _react2.default.createElement(
 	              "option",
-	              { value: "synth" },
-	              "Synth"
+	              { value: "ecello" },
+	              "Electric Cello"
 	            ),
 	            _react2.default.createElement(
 	              "option",
@@ -51468,8 +51503,13 @@
 	            ),
 	            _react2.default.createElement(
 	              "option",
-	              { value: "ecello" },
-	              "Electric Cello"
+	              { value: "membrane" },
+	              "Membrane"
+	            ),
+	            _react2.default.createElement(
+	              "option",
+	              { value: "synth" },
+	              "Synth"
 	            )
 	          )
 	        )
@@ -51575,6 +51615,7 @@
 	      altTextShow: [],
 	      letterClassA: 'underline',
 	      letterClassB: 'letters'
+	
 	    };
 	
 	    //this.lineLetters = this.lineLetters.bind(this)
@@ -51598,8 +51639,6 @@
 	    value: function componentWillReceiveProps(nextProps) {
 	      this.lineLetters(nextProps.text);
 	      console.log("Tone.Transport.position ", _tone2.default.Transport.position);
-	      this.setState({ letterClassA: nextProps.letterClassA });
-	      console.log("letterClassA", nextProps.letterClassA);
 	    }
 	  }, {
 	    key: 'lineLetters',
@@ -51619,21 +51658,7 @@
 	            char
 	          ));
 	          oneNote.val = char;
-	        } else if (char.match(/\s/)) {
-	          if (oneNote.val) {
-	            altText.push(_react2.default.createElement(
-	              'span',
-	              { key: idx, className: 'underline2' },
-	              char
-	            ));
-	          } else {
-	            altText.push(_react2.default.createElement(
-	              'span',
-	              { key: idx, className: _this2.state.letterClassB },
-	              char
-	            ));
-	          }
-	        } else if (char.match(/[!.,;?]/)) {
+	        } else if (char.match(/\s|[!.,;?]/)) {
 	          altText.push(_react2.default.createElement(
 	            'span',
 	            { key: idx, className: _this2.state.letterClassB },
@@ -51658,60 +51683,33 @@
 	
 	        _this2.setState({ altText: altText });
 	      });
-	      console.log('this.state.altText', this.state.altText);
+	      //this.notate()
 	    }
 	
-	    // notate(nextProps) {
+	    // notate() {
 	    // Tone.Transport.schedule((time) => {
-	    //     const textArr = (nextProps.text).split('')
-	    //     const altText = []
-	    //     let idx = 0
+	    //     const textArr = this.state.altText
+	    //     let altTextShow;
 	
 	    // while (textArr.length) {
+	    //   Tone.Transport.scheduleRepeat((time) => {
 	    //   Tone.Draw.schedule(() => {
-	    //     console.log('hey')
-	    //     let char = textArr.shift()
+	    //     console.log('heyhey')
+	    //     let charSpan = textArr.shift()
 	
-	    //       if (char.match(/[A-G]/i)) {
-	    //       altText.push(<span key={idx} className="letters underline">{char}</span>)
-	    //       } else {
-	    //         altText.push(<span key={idx} className="letters">{char}</span>)
-	    //       }
-	    //       this.setState({ altText: altText })
-	    //       console.log('altText state', this.state.altText)
-	    //       idx++
+	    //     altTextShow.push(charSpan)
+	
+	    //     this.setState({ altTextShow: altTextShow })
+	    //       console.log('altTextShow state', this.state.altTextShow)
+	
+	    //   }, time)
 	    //   }, '16n')
 	    // }
 	
 	    // }, "0:0:1")
 	    // }
 	
-	  }, {
-	    key: 'notate',
-	    value: function notate(nextProps) {
-	      _tone2.default.Transport.schedule(function (time) {
-	        //     const textArr = (nextProps.text).split('')
-	        //     const altText = []
-	        //     let idx = 0
 	
-	        _tone2.default.Draw.schedule(function () {
-	          console.log('hey!!', _tone2.default.Transport.position);
-	        }, time);
-	
-	        // while (textArr.length) {
-	
-	        // let char = textArr.shift()
-	
-	        //   if (char.match(/[A-G]/i)) {
-	        //   altText.push(<span key={idx} className="letters underline">{char}</span>)
-	        //   } else {
-	        //     altText.push(<span key={idx} className="letters">{char}</span>)
-	        //   }
-	        //   this.setState({ altText: altText })
-	        //   console.log('altText state', this.state.altText)
-	        //   idx++
-	      }, "0:0:0");
-	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {

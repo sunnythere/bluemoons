@@ -3,18 +3,21 @@ import React from 'react'
 
 export default (props) => {
 
+
 return(
     <div id="div_options">
       <div>
-        <form>
+        <form onSubmit={props.onSubmitVoice}>
 
           <fieldset>
-            <legend>voice: {props.instVal}</legend>
+            <legend>voice: {props.voice}</legend>
 
-            <select name="instruments" value={props.instVal} onChange={props.onChangeVoice}>
-                <option value="synth">Synth</option>
-                <option value="glass">Glass</option>
+            <select value={props.voice} onChange={props.onChangeVoice}>
                 <option value="ecello">Electric Cello</option>
+                <option value="glass">Glass</option>
+                <option value="membrane">Membrane</option>
+                <option value="synth">Synth</option>
+
             </select>
           </fieldset>
 
@@ -23,3 +26,4 @@ return(
     </div>
   )
 }
+
