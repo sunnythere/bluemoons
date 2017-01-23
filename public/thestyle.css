@@ -1,20 +1,36 @@
 body {
+  background-color: dimgrey;
+  font-family: 'Source Code Pro', monospace;
   font-size: 20px;
   text-align: center;
   width: 100%;
   height: 100%;
-  color: slategrey;
+  color: white;
+  position: relative;
 }
 
-#div_id {
-  display: flex;
-  justify-content: center;
+#div_main {
   height: 100%;
+  display: block;
 }
+#div_field {
+  padding-top: 5%;
+
+}
+#div_btn {
+  height: 15px;
+}
+#clear_btn {
+  position: absolute;
+  right: 0;
+ }
 
 input {
+  background-color: dimgrey;
   border: 0px none;
   font-size: 3em;
+  font-family:'Source Code Pro', monospace;;
+  color: white;
   margin: auto;
 }
 input:focus {
@@ -28,9 +44,23 @@ input[type=submit] {
   height: 1px;
 }
 
-
+button {
+  background-color: rgba(0,0,0,0);
+  height: 15px;
+  width: 15px;
+  border: 1px solid grey;
+  border-radius: 5px;
+}
 #div_options {
   display: inline;
+  position: absolute;
+  top: 170px;
+  left: 380px;
+}
+#div_bpm {
+  display: inline;
+  position: absolute;
+  top: 170px;
 }
 
 fieldset {
@@ -39,4 +69,83 @@ fieldset {
 }
 legend {
   font-variant: small-caps ;
+}
+.span_num {
+  font-size: medium;
+}
+
+#div_screen {
+  padding: 10%;
+  height: 100%;
+  display: block;
+}
+
+#div_bookbtn {
+  text-align: right;
+}
+#book_btn {
+  position: fixed
+  bottom: 0;
+  right: 20;
+}
+
+#span_text {
+  font-size: 3em;
+  line-height: 1.5em;
+  animation-duration: 3s;
+  animation-name: slidein;
+}
+
+span.invisible {
+  /*opacity: 0.0;
+  animation-duration: 3s;
+  animation-name: slidein;*/
+}
+
+/*@keyframes slidein
+  from {
+    margin-left: 100%;
+    width: 300%;
+  }
+  to {
+    margin-left: 0%;
+    width: 100%;
+  }*/
+
+span.letters {
+  color: white;
+  font-size: 3em;
+}
+
+.div_transition {
+  height: 100%
+}
+
+span.underline {
+  background-image: url("/img/rednote.png");
+  font-size: 3em;
+  /* transition: color 1s ease-in; */
+}
+
+span.underline2 {
+  background-image: url("/img/rednote2.png");
+  font-size: 3em;
+}
+
+.notate-enter {
+  opacity: 0.01;
+}
+
+.notate-enter.notate-enter-active {
+  opacity: 1;
+  transition: opacity 300ms ease-in;
+}
+
+.notate-leave {
+  opacity: 1;
+}
+
+.notate-leave.notate-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
 }

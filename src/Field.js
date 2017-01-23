@@ -12,6 +12,7 @@ return(
         value={props.text}
         onChange={props.writeText}
         className="input-field"
+        style={{opacity: props.disappearText}}
         autoFocus />
 
       <input type="submit" tabIndex="-1" />
