@@ -51485,7 +51485,7 @@
 	          _react2.default.createElement(
 	            "legend",
 	            null,
-	            "voice: ",
+	            "voice : ",
 	            props.voice
 	          ),
 	          _react2.default.createElement(
@@ -51503,8 +51503,8 @@
 	            ),
 	            _react2.default.createElement(
 	              "option",
-	              { value: "membrane" },
-	              "Membrane"
+	              { value: "pluck" },
+	              "Pluck"
 	            ),
 	            _react2.default.createElement(
 	              "option",
@@ -51551,7 +51551,7 @@
 	          _react2.default.createElement(
 	            "legend",
 	            null,
-	            "bpm: ",
+	            "bpm : ",
 	            _react2.default.createElement(
 	              "span",
 	              { className: "span_num" },
@@ -51563,7 +51563,7 @@
 	            name: "points",
 	            value: props.bpm,
 	            onChange: props.onChangeBPM,
-	            min: "20", max: "250" })
+	            min: "2", max: "350" })
 	        )
 	      )
 	    )
@@ -51685,31 +51685,30 @@
 	      });
 	      //this.notate()
 	    }
+	  }, {
+	    key: 'notate',
+	    value: function notate() {
+	      var _this3 = this;
 	
-	    // notate() {
-	    // Tone.Transport.schedule((time) => {
-	    //     const textArr = this.state.altText
-	    //     let altTextShow;
+	      _tone2.default.Transport.schedule(function (time) {
+	        var textArr = _this3.state.altText;
+	        var altTextShow = void 0;
 	
-	    // while (textArr.length) {
-	    //   Tone.Transport.scheduleRepeat((time) => {
-	    //   Tone.Draw.schedule(() => {
-	    //     console.log('heyhey')
-	    //     let charSpan = textArr.shift()
+	        while (textArr.length) {
+	          _tone2.default.Transport.scheduleRepeat(function (time) {
+	            _tone2.default.Draw.schedule(function () {
+	              console.log('heyhey');
+	              var charSpan = textArr.shift();
 	
-	    //     altTextShow.push(charSpan)
+	              altTextShow.push(charSpan);
 	
-	    //     this.setState({ altTextShow: altTextShow })
-	    //       console.log('altTextShow state', this.state.altTextShow)
-	
-	    //   }, time)
-	    //   }, '16n')
-	    // }
-	
-	    // }, "0:0:1")
-	    // }
-	
-	
+	              _this3.setState({ altTextShow: altTextShow });
+	              console.log('altTextShow state', _this3.state.altTextShow);
+	            }, time);
+	          }, '16n');
+	        }
+	      }, "0:0:1");
+	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {

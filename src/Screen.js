@@ -63,28 +63,29 @@ lineLetters(text) {
 
 
 
-// notate() {
-// Tone.Transport.schedule((time) => {
-//     const textArr = this.state.altText
-//     let altTextShow;
+notate() {
+Tone.Transport.schedule((time) => {
+    const textArr = this.state.altText
+    let altTextShow;
 
-// while (textArr.length) {
-//   Tone.Transport.scheduleRepeat((time) => {
-//   Tone.Draw.schedule(() => {
-//     console.log('heyhey')
-//     let charSpan = textArr.shift()
+while (textArr.length) {
+  Tone.Transport.scheduleRepeat((time) => {
+  Tone.Draw.schedule(() => {
+    console.log('heyhey')
+    let charSpan = textArr.shift()
 
-//     altTextShow.push(charSpan)
 
-//     this.setState({ altTextShow: altTextShow })
-//       console.log('altTextShow state', this.state.altTextShow)
+    altTextShow.push(charSpan)
 
-//   }, time)
-//   }, '16n')
-// }
+    this.setState({ altTextShow: altTextShow })
+      console.log('altTextShow state', this.state.altTextShow)
 
-// }, "0:0:1")
-// }
+  }, time)
+  }, '16n')
+}
+
+}, "0:0:1")
+}
 
 
 

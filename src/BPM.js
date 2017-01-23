@@ -9,14 +9,14 @@ return(
         <form>
 
           <fieldset>
-            <legend>bpm: <span className="span_num">{props.bpm}</span></legend>
+            <legend>bpm : <span className="span_num">{props.bpm}</span></legend>
 
             <input
               type="range"
               name="points"
               value={props.bpm}
               onChange={props.onChangeBPM}
-              min="20" max="250" />
+              min="2" max="350" />
           </fieldset>
 
         {

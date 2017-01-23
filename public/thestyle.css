@@ -1,5 +1,5 @@
 body {
-  background-color: dimgrey;
+  background-color: #404040;
   font-family: 'Source Code Pro', monospace;
   font-size: 20px;
   text-align: center;
@@ -26,7 +26,7 @@ body {
  }
 
 input {
-  background-color: dimgrey;
+  background-color: #404040;
   border: 0px none;
   font-size: 3em;
   font-family:'Source Code Pro', monospace;;
