@@ -1,14 +1,14 @@
 {
   "name": "bluemooons2",
   "version": "1.0.0",
-  "description": "",
+  "description": "text as music",
   "main": "index.js",
   "scripts": {
     "build": "webpack -w",
     "start": "nodemon server/index.js",
+    "test": "mocha"
   },
-  "keywords": [],
-  "author": "",
+  "author": "y.alice",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.15.3",
@@ -35,7 +35,6 @@
     "babel-loader": "^6.2.10",
     "babel-preset-es2015": "^6.18.0",
     "babel-preset-react": "^6.16.0",
-
     "webpack": "^1.14.0"
   }
 }
