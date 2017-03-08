@@ -452,7 +452,7 @@ button {
   background-color: rgba(0,0,0,0);
   height: 15px;
   width: 15px;
-  border: 1px solid grey;
+  border: 1px solid lightgrey;
   border-radius: 5px;
   outline: none;
 }
