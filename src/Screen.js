@@ -3,131 +3,107 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import Tone from 'tone'
 
 
+
+
 export default class Screen extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      altText: [],
-      altTextShow: [],
-      letterClassA: 'underline',
-      letterClassB: 'letters',
 
-    }
-
-    //this.lineLetters = this.lineLetters.bind(this)
+constructor(props) {
+  super(props)
+  this.state = {
+    displayText: [],
+    nextLetter: ''
   }
-
-
-shouldComponentUpdate(nextProps, nextState) {
-  if ((this.props.returnKey !== nextProps.returnKey) && (nextProps.text)){
-      return true;
-  }
-  if (this.props.letterClassA !== nextProps.letterClassA ) {
-    return true;
-  } else {
-    return false;
-  }
+  this.oneAtATime = this.oneAtATime.bind(this)
+  //this.update = this.update.bind(this)
 }
 
+
 componentWillReceiveProps(nextProps) {
-this.lineLetters(nextProps.text)
+  this.oneAtATime(nextProps.text)
   console.log("Tone.Transport.position ", Tone.Transport.position)
 }
 
+oneAtATime() {
+  // str.split('').reduce((prev, curr) => {
+  //   setTimeout(function() {
+  //     console.log('prev', prev)
+  //     prev = prev.concat(curr)
+  //     console.log('prev ', prev)
+  //     this.setState({ displayText: prev })
+  //   }.bind(this), 0)
+  //   return prev
 
-lineLetters(text) {
-  const textArr = text.split('')
-  const altText = []
-  let oneNote = {}
-
-  textArr.map( (char, idx) => {
-
-    if (char.match(/[A-G]/i)) {
-      altText.push(<span key={idx} className="underline">{char}</span>)
-      oneNote.val = char
-    } else if (char.match(/\s|[!.,;?]/)) {
-      altText.push(<span key={idx} className={this.state.letterClassB}>{char}</span>)
-      oneNote.val = ''
-    } else {
-        if (oneNote.val) {
-          altText.push(<span key={idx} className="underline2">{char}</span>)
-        } else {
-           altText.push(<span key={idx} className={this.state.letterClassB}>{char}</span>)
-        }
-    }
-
-    this.setState({ altText : altText })
-})
-  //this.notate()
+  // }, this.state.displayText)
+  let text = document.getElementsByClassName('notate-enter-active')
+  let millSec = Tone.Time('16n').toMilliseconds()
+  for (let x = 0; x < text.length; x++) {
+      text[x].style.transitionDelay = `${millSec*x}ms`
+  }
+  return text
 }
 
-
-
-notate() {
-Tone.Transport.schedule((time) => {
-    const textArr = this.state.altText
-    let altTextShow;
-
-while (textArr.length) {
-  Tone.Transport.scheduleRepeat((time) => {
-  Tone.Draw.schedule(() => {
-    console.log('heyhey')
-    let charSpan = textArr.shift()
-
-
-    altTextShow.push(charSpan)
-
-    this.setState({ altTextShow: altTextShow })
-      console.log('altTextShow state', this.state.altTextShow)
-
-  }, time)
-  }, '16n')
-}
-
-}, "0:0:1")
-}
-
+// update(newText) {
+//   this.setState({ displayText: newText })
+// }
 
 
 render() {
 
-  return(
-    <div id="div_screen">
+console.log('LOCAL STATE ', this.state)
+  // let display = this.state.displayText.length ? this.state.displayText
 
+  let display = this.props.text.split('').map((char, i) => {
+    let oneNote = {}
+
+    if (char.match(/[A-G]/i)) {
+      oneNote.val = char
+      return (
+        <div key={i} className="letters underline">
+          {char}
+        </div>
+      )
+    } else if (char.match(/\s|[!.,;?]/)) {
+      oneNote.val = ''
+      return (
+        <div key={i} className="letters">
+          {char}
+        </div>
+      )
+    } else {
+      if (oneNote.val) {
+        return (
+          <div key={i} className="underline2 letters">{char}</div>
+        )
+      } else {
+        return (
+          <div key={i} className="letters">{char}</div>
+          //`${char}-${i}`
+        )
+      }
+    }
+
+  })
+
+console.log('display ', display)
+
+this.oneAtATime()
+
+
+return (
+    <div id="div_screen">
 
       <ReactCSSTransitionGroup className="div_transition"
         transitionName="notate"
-        transitionEnterTimeout={500}
-        transitionLeaveTimeout={300}>
+        transitionEnterTimeout={0}
+        transitionLeave={false}>
 
-              {this.state.altText}
+              {display}
 
       </ReactCSSTransitionGroup>
 
-
-
-            {
-              // this.props.returnKey &&
-              // <span id="span_text">
-              // {
-              //   textArr.map( (char, idx) => {
-              //     if (char.match(/[A-G]/i)) {
-              //       return <span key={idx} className="underline">{char}</span>
-              //     } else {
-              //       return <span key={idx}>{char}</span>
-              //     }
-              //   } )
-              //}
-              //</span>
-            }
-
-
-
-        {
-        //state:   {this.state.text}
-        }
     </div>
   )
 }
+
 
 }

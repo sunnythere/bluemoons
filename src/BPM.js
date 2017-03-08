@@ -8,7 +8,7 @@ return(
       <div>
         <form>
 
-          <fieldset>
+          <fieldset id="bpmfieldset">
             <legend>bpm : <span className="span_num">{props.bpm}</span></legend>
 
             <input
@@ -19,17 +19,6 @@ return(
               min="2" max="350" />
           </fieldset>
 
-        {
-          // <br />
-
-          // <input
-          //   type="range"
-          //   name="ramp"
-          //   value={props.ramp}
-          //   onChange={props.watchBPMramp}
-          //   min="1" max="10" />
-          // {props.ramp}
-        }
 
 
         </form>

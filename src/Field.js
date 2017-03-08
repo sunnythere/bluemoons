@@ -3,22 +3,24 @@ import React from 'react';
 
 export default (props) => {
 
-return(
+  return (
     <div id="div_field">
-    <form onSubmit={props.handleSubmit}>
+      <form onSubmit={props.handleSubmit}>
 
-      <input
-        type="text"
-        value={props.text}
-        onChange={props.writeText}
-        className="input-field"
-        style={{opacity: props.disappearText}}
-        autoFocus />
+        <input
+          type="text"
+          value={props.holdtext}
+          onChange={props.writeText}
+          className="input-field"
+          style={{opacity: props.disappearText}}
+          autoFocus />
 
-      <input type="submit" tabIndex="-1" />
-    </form>
+        <input type="submit" tabIndex="-1" />
+
+      </form>
     </div>
   )
+
 }
 
 

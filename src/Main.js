@@ -1,12 +1,13 @@
 import React from 'react'
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
-import {Link} from 'react-router'
+// import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+import { Link } from 'react-router'
 import Tone from 'tone'
 import Field from './Field';
-import Options from './Options'
+import Voices from './Voices'
 import BPM from './BPM'
 import Screen from './Screen'
 import Book from './Book'
+import Pattern from './Pattern'
 
 
 
@@ -15,28 +16,34 @@ export default class Main extends React.Component {
 constructor() {
   super()
   this.state = {
+    holdtext: '',
     text: '',
     musicArr: [],
     bpm: 120,
-    optionsClicked: false,
+    millSec: 0,
+    voicesClicked: false,
     opBPMClicked: false,
+    opPattClicked: false,
     returnKey: false,
     transportStop: true,
     inputTextVis: '1',
     letterClassA: 'underline',
     letterClassB: 'letters',
-    voiceTitle: 'synth'
-
+    voiceTitle: 'synth',
+    pattern: 'original'
   };
 
   this.writeText = this.writeText.bind(this)
   this.handleSubmit = this.handleSubmit.bind(this)
 
-  this.toggleOptionsPanel = this.toggleOptionsPanel.bind(this)
+  this.toggleVoicesPanel = this.toggleVoicesPanel.bind(this)
   this.toggleBPMPanel = this.toggleBPMPanel.bind(this)
+  this.togglePatternPanel = this.togglePatternPanel.bind(this)
   this.onChangeBPM = this.onChangeBPM.bind(this)
   this.onChangeVoice = this.onChangeVoice.bind(this)
-  this.onSubmitVoice = this.onSubmitVoice.bind(this)
+  //this.onSubmitVoice = this.onSubmitVoice.bind(this)
+  this.onChangePattern = this.onChangePattern.bind(this)
+
   this.stopTone = this.stopTone.bind(this)
   this.randomOctave = this.randomOctave.bind(this)
   // this.makeHarmony = this.makeHarmony.bind(this)
@@ -269,11 +276,15 @@ makeSynthPart(notesArr) {
   let pattern = new Tone.Part((time, note) => {
     this.tone.triggerAttackRelease(note.val, note.dur, time, note.vel)
 
-    Tone.Draw.schedule(() => {
-    console.log('hey!', Tone.Transport)
-      // ??? nothing works
+    //this.setState({ millSec: time })
 
-  }, time)
+  //   Tone.Draw.schedule(() => {
+  //     this.state.text.split('').map(element => {
+  //       //console.log(element)
+
+  //     })
+
+  // }, time)
 
   }, notesArr).start()
 }
@@ -301,8 +312,11 @@ stopTone() {
 
 /* ---------------event handlers-----------------*/
 
-toggleOptionsPanel() {
-  this.setState({ optionsClicked: !this.state.optionsClicked })
+togglePatternPanel() {
+  this.setState({ opPattClicked: !this.state.opPattClicked })
+}
+toggleVoicesPanel() {
+  this.setState({ voicesClicked: !this.state.voicesClicked })
 }
 toggleBPMPanel() {
   this.setState({ opBPMClicked: !this.state.opBPMClicked })
@@ -313,8 +327,9 @@ onChangeBPM(e) {
   e.preventDefault()
   let bpm = e.target.value
   this.setState({ bpm: bpm })
-  console.log('bpm ', bpm)
   Tone.Transport.bpm.value = bpm
+  let unit = Tone.Time('16n').toMilliseconds()
+  this.setState({ millSec: unit })
 }
 
 //watches voice pulldown
@@ -346,15 +361,19 @@ onChangeVoice(e) {
   }
 }
 
-onSubmitVoice(e) {
-  e.preventDefault()
-  let voice = e.target.value
-  this.setState({ voice: voice })
+// onSubmitVoice(e) {
+//   e.preventDefault()
+//   let voice = e.target.value
+//   this.setState({ voice: voice })
+// }
+
+onChangePattern() {
+
 }
 
+
 writeText(event) {
-  this.setState({ text: event.target.value });
-  console.log(this.state.text)
+  this.setState({ holdtext: event.target.value });
 }
 
 disappearText() {
@@ -365,19 +384,24 @@ clearText() {
   this.setState({ text: '', inputTextVis: '1'})
 }
 
+
+
 // ------------ PLAYS NOTES---------
 handleSubmit(event) {
   event.preventDefault()
 
-  const notes = this.makeMusicNotes_Obj(this.state.text)
+  this.setState({ text: this.state.holdtext })
+  //translate string, feed it into synth constructor
+  const notes = this.makeMusicNotes_Obj(this.state.holdtext)
   this.makeSynthPart(notes)
-
+  //set returnKey true (to trigger update of Screen component)
   this.setState({ returnKey: true })
-
+  //start Transport timeline, set transportStop val to false(for transport stop button)
   Tone.Transport.start()
   this.setState({ transportStop: false })
-
-  this.disappearText()
+  //make form text transparent
+  //this.disappearText()
+  this.setState({ holdtext: ''})
 }
 
 
@@ -386,50 +410,71 @@ render() {
 
   return (
     <div id="div_main">
-      <div>
-        <Field
-          text={this.state.text}
-          handleSubmit={this.handleSubmit}
-          writeText={this.writeText}
-          disappearText={this.state.inputTextVis}/>
 
-      </div>
+      <Field
+        holdtext={this.state.holdtext}
+        handleSubmit={this.handleSubmit}
+        writeText={this.writeText}
+        disappearText={this.state.inputTextVis}/>
+
+
       <div id="div_btn">
 
-        <button onClick={this.stopTone} />
+        &nbsp; &nbsp; &nbsp;
+        <button onClick={this.togglePatternPanel} title="patterns"/>
+        <button onClick={this.toggleVoicesPanel} title="voices" />
+        <button onClick={this.toggleBPMPanel} title="beats per minute" />
 
-        <button onClick={this.toggleOptionsPanel} name="voice"/>
-        <button onClick={this.toggleBPMPanel} name="bpm" />
-        <button id="clear_btn" onClick={this.clearText} />
-        {
-          this.state.optionsClicked && <Options
-                      onSubmitVoice={this.onSubmitVoice}
-                      onChangeVoice={this.onChangeVoice}
-                      voice={this.state.voiceTitle}/>
+        <span id="clear_btn">
+          <button  onClick={this.clearText} title="clear text" />
+          &nbsp;
+          <button onClick={this.stopTone} title="stop"/>
+        </span>
+
+        <br/> &nbsp; &nbsp; &nbsp;
+
+
+        { this.state.opPattClicked &&
+            <div className="panel">
+              <Pattern
+                    onChangePattern={this.onChangePattern}
+                    pattern={this.state.pattern} />
+            </div>
         }
-        {
-          this.state.opBPMClicked && <BPM
-                      onChangeBPM={this.onChangeBPM}
-                      bpm={this.state.bpm} />
+        { this.state.voicesClicked &&
+            <div className="panel">
+              <Voices
+                    onSubmitVoice={this.onSubmitVoice}
+                    onChangeVoice={this.onChangeVoice}
+                    voice={this.state.voiceTitle}/>
+            </div>
         }
+        { this.state.opBPMClicked &&
+            <div className="panel">
+              <BPM
+                    onChangeBPM={this.onChangeBPM}
+                    bpm={this.state.bpm} />
+            </div>
+        }
+
       </div>
+
       <div>
 
-
-
-      {
         <Screen
           text={this.state.text}
           returnKey={this.state.returnKey}
-          letterClassA={this.state.letterClassA}
-          letterClassB={this.state.letterClassB}
+          millSec={this.state.millSec}
+          //letterClassA={this.state.letterClassA}
+          //letterClassB={this.state.letterClassB}
           musicArr={this.state.musicArr}/>
-      }
+
       </div>
 
       <div id="div_bookbtn">
-      <Link to="/book"><button id="book_btn" /></Link>
+        <Link to="/book"><button id="book_btn" /></Link>
       </div>
+
     </div>
   )
 }
