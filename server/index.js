@@ -28,6 +28,6 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500).send(err.message)
 })
 
-app.listen(3000, function() {
+app.listen(process.env.PORT || 3000, function() {
   console.log(chalk.cyan("Listening on  port 3000  🐠"))
 })
