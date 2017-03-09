@@ -417,7 +417,6 @@ render() {
 
       <div id="div_btn">
 
-        &nbsp; &nbsp; &nbsp;
         <button onClick={this.togglePatternPanel} title="patterns"/>
         <button onClick={this.toggleVoicesPanel} title="voices" />
         <button onClick={this.toggleBPMPanel} title="beats per minute" />
@@ -428,7 +427,7 @@ render() {
           <button onClick={this.stopTone} title="stop"/>
         </span>
 
-        <br/> &nbsp; &nbsp; &nbsp;
+        <br/>
 
 
         { this.state.opPattClicked &&
