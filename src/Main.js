@@ -107,7 +107,6 @@ makeMusicNotes_Obj(str) {  //original BlueMoons translation formula
           oneNote.dur = Tone.Time('16n').mult(oneNote.dur).toNotation()  //convert number of sixteenths to duration
           oneNote.time = Tone.Time(nextStartTime).toBarsBeatsSixteenths() //turn accumlated start time to TransportTime format
           musicNotes.push(oneNote)
-              console.log(oneNote)
 
           nextStartTime = `${nextStartTime} + ${oneNote.dur}` //assign new start time for next note
           oneNote = {vel: '.8', dur: 0}  //replaces oneNote values
@@ -131,7 +130,7 @@ makeMusicNotes_Obj(str) {  //original BlueMoons translation formula
       musicNotes.push(oneNote)
   }
   this.setState({ musicArr: musicNotes })
-  console.log('musicNotes' , musicNotes)
+  // console.log('musicNotes' , musicNotes)
   return musicNotes
 }
 
@@ -149,7 +148,6 @@ makeMusicNotes_Obj1(str) {  //altered translation formula
           oneNote.dur = Tone.Time('16n').mult(oneNote.dur).toNotation()  //convert number of sixteenths to duration
           oneNote.time = Tone.Time(nextStartTime).toBarsBeatsSixteenths() //turn accumlated start time to TransportTime format
           musicNotes.push(oneNote)
-              console.log(oneNote)
 
           nextStartTime = `${nextStartTime} + ${oneNote.dur}` //assign new start time for next note
           oneNote = {vel: '.8', dur: 0}  //replaces oneNote values
@@ -337,7 +335,6 @@ onChangeVoice(e) {
   e.preventDefault()
   let voice = e.target.value
   this.setState({ voiceTitle: voice })
-  console.log('e.target.value ', e.target.value)
 
   switch (voice) {
     case 'synth':

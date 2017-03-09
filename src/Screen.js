@@ -84,7 +84,7 @@ console.log('LOCAL STATE ', this.state)
 
   })
 
-console.log('display ', display)
+// console.log('display ', display)
 
 this.oneAtATime()
 

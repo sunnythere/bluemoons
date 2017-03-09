@@ -2,6 +2,9 @@
   "name": "bluemooons2",
   "version": "1.0.0",
   "description": "text as music",
+  "engines": {
+    "node": "7.4.0"
+  },
   "main": "index.js",
   "scripts": {
     "build": "webpack -w",

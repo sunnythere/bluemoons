@@ -26726,7 +26726,6 @@
 	            oneNote.dur = _tone2.default.Time('16n').mult(oneNote.dur).toNotation(); //convert number of sixteenths to duration
 	            oneNote.time = _tone2.default.Time(nextStartTime).toBarsBeatsSixteenths(); //turn accumlated start time to TransportTime format
 	            musicNotes.push(oneNote);
-	            console.log(oneNote);
 	
 	            nextStartTime = nextStartTime + ' + ' + oneNote.dur; //assign new start time for next note
 	            oneNote = { vel: '.8', dur: 0 }; //replaces oneNote values
@@ -26749,7 +26748,7 @@
 	        musicNotes.push(oneNote);
 	      }
 	      this.setState({ musicArr: musicNotes });
-	      console.log('musicNotes', musicNotes);
+	      // console.log('musicNotes' , musicNotes)
 	      return musicNotes;
 	    }
 	  }, {
@@ -26769,7 +26768,6 @@
 	            oneNote.dur = _tone2.default.Time('16n').mult(oneNote.dur).toNotation(); //convert number of sixteenths to duration
 	            oneNote.time = _tone2.default.Time(nextStartTime).toBarsBeatsSixteenths(); //turn accumlated start time to TransportTime format
 	            musicNotes.push(oneNote);
-	            console.log(oneNote);
 	
 	            nextStartTime = nextStartTime + ' + ' + oneNote.dur; //assign new start time for next note
 	            oneNote = { vel: '.8', dur: 0 }; //replaces oneNote values
@@ -26992,7 +26990,6 @@
 	      e.preventDefault();
 	      var voice = e.target.value;
 	      this.setState({ voiceTitle: voice });
-	      console.log('e.target.value ', e.target.value);
 	
 	      switch (voice) {
 	        case 'synth':
@@ -49638,7 +49635,7 @@
 	        }
 	      });
 	
-	      console.log('display ', display);
+	      // console.log('display ', display)
 	
 	      this.oneAtATime();
 	
