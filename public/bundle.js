@@ -27073,7 +27073,6 @@
 	        _react2.default.createElement(
 	          'div',
 	          { id: 'div_btn' },
-	          '\xA0 \xA0 \xA0',
 	          _react2.default.createElement('button', { onClick: this.togglePatternPanel, title: 'patterns' }),
 	          _react2.default.createElement('button', { onClick: this.toggleVoicesPanel, title: 'voices' }),
 	          _react2.default.createElement('button', { onClick: this.toggleBPMPanel, title: 'beats per minute' }),
@@ -27085,7 +27084,6 @@
 	            _react2.default.createElement('button', { onClick: this.stopTone, title: 'stop' })
 	          ),
 	          _react2.default.createElement('br', null),
-	          ' \xA0 \xA0 \xA0',
 	          this.state.opPattClicked && _react2.default.createElement(
 	            'div',
 	            { className: 'panel' },
