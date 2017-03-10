@@ -49596,9 +49596,8 @@
 	
 	      console.log('LOCAL STATE ', this.state);
 	      // let display = this.state.displayText.length ? this.state.displayText
-	
+	      var oneNote = {};
 	      var display = this.props.text.split('').map(function (char, i) {
-	        var oneNote = {};
 	
 	        if (char.match(/[A-G]/i)) {
 	          oneNote.val = char;
@@ -49616,6 +49615,7 @@
 	          );
 	        } else {
 	          if (oneNote.val) {
+	            console.log('UNDERLINE2');
 	            return _react2.default.createElement(
 	              'div',
 	              { key: i, className: 'underline2 letters' },

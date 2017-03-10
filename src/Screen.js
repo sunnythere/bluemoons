@@ -51,9 +51,9 @@ render() {
 
 console.log('LOCAL STATE ', this.state)
   // let display = this.state.displayText.length ? this.state.displayText
-
+  let oneNote = {}
   let display = this.props.text.split('').map((char, i) => {
-    let oneNote = {}
+
 
     if (char.match(/[A-G]/i)) {
       oneNote.val = char
@@ -71,6 +71,7 @@ console.log('LOCAL STATE ', this.state)
       )
     } else {
       if (oneNote.val) {
+        console.log('UNDERLINE2')
         return (
           <div key={i} className="underline2 letters">{char}</div>
         )
