@@ -20,13 +20,13 @@ constructor(props) {
 
 componentWillReceiveProps(nextProps) {
   this.oneAtATime(nextProps.text)
-  console.log("Tone.Transport.position ", Tone.Transport.position)
+  //console.log("Tone.Transport.position ", Tone.Transport.position)
 }
 
 oneAtATime() {
 
   let text = document.getElementsByClassName('notate-enter-active')
-  console.log('TEXT ', text)
+  //console.log('TEXT ', text)
   let millSec = Tone.Time('16n').toMilliseconds()
   for (let x = 0; x < text.length; x++) {
       text[x].style.transitionDelay = `${millSec*x}ms`
@@ -41,7 +41,7 @@ oneAtATime() {
 
 render() {
 
-console.log('LOCAL STATE ', this.state)
+//console.log('LOCAL STATE ', this.state)
   // let display = this.state.displayText.length ? this.state.displayText
   let oneNote = {}
   let display = this.props.text.split('').map((char, i) => {
@@ -63,7 +63,6 @@ console.log('LOCAL STATE ', this.state)
       )
     } else {
       if (oneNote.val) {
-        console.log('UNDERLINE2')
         return (
           <div key={i} className="underline2 letters">{char}</div>
         )

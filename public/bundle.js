@@ -49607,14 +49607,14 @@
 	    key: 'componentWillReceiveProps',
 	    value: function componentWillReceiveProps(nextProps) {
 	      this.oneAtATime(nextProps.text);
-	      console.log("Tone.Transport.position ", _tone2.default.Transport.position);
+	      //console.log("Tone.Transport.position ", Tone.Transport.position)
 	    }
 	  }, {
 	    key: 'oneAtATime',
 	    value: function oneAtATime() {
 	
 	      var text = document.getElementsByClassName('notate-enter-active');
-	      console.log('TEXT ', text);
+	      //console.log('TEXT ', text)
 	      var millSec = _tone2.default.Time('16n').toMilliseconds();
 	      for (var x = 0; x < text.length; x++) {
 	        text[x].style.transitionDelay = millSec * x + 'ms';
@@ -49631,7 +49631,7 @@
 	    key: 'render',
 	    value: function render() {
 	
-	      console.log('LOCAL STATE ', this.state);
+	      //console.log('LOCAL STATE ', this.state)
 	      // let display = this.state.displayText.length ? this.state.displayText
 	      var oneNote = {};
 	      var display = this.props.text.split('').map(function (char, i) {
@@ -49652,7 +49652,6 @@
 	          );
 	        } else {
 	          if (oneNote.val) {
-	            console.log('UNDERLINE2');
 	            return _react2.default.createElement(
 	              'div',
 	              { key: i, className: 'underline2 letters' },
