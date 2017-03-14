@@ -53,6 +53,10 @@ constructor() {
   this.tone = new Tone.PolySynth(3, Tone.Synth).toMaster()
 }
 
+componentDidMount() {
+  this.textInput.focus()
+}
+
 /* ---------------words to music notation-----------------*/
 makeMusicNotes_wordNote(str) {
 
@@ -412,7 +416,8 @@ render() {
         holdtext={this.state.holdtext}
         handleSubmit={this.handleSubmit}
         writeText={this.writeText}
-        disappearText={this.state.inputTextVis}/>
+        disappearText={this.state.inputTextVis}
+        ref={(input) => { this.textInput = input }}/>
 
 
       <div id="div_btn">

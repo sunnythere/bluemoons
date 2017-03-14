@@ -26665,10 +26665,15 @@
 	    return _this;
 	  }
 	
-	  /* ---------------words to music notation-----------------*/
-	
-	
 	  _createClass(Main, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      this.textInput.focus();
+	    }
+	
+	    /* ---------------words to music notation-----------------*/
+	
+	  }, {
 	    key: 'makeMusicNotes_wordNote',
 	    value: function makeMusicNotes_wordNote(str) {
 	
@@ -27061,6 +27066,7 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var _this4 = this;
 	
 	      return _react2.default.createElement(
 	        'div',
@@ -27069,7 +27075,10 @@
 	          holdtext: this.state.holdtext,
 	          handleSubmit: this.handleSubmit,
 	          writeText: this.writeText,
-	          disappearText: this.state.inputTextVis }),
+	          disappearText: this.state.inputTextVis,
+	          ref: function ref(input) {
+	            _this4.textInput = input;
+	          } }),
 	        _react2.default.createElement(
 	          'div',
 	          { id: 'div_btn' },
@@ -49365,31 +49374,67 @@
 	  value: true
 	});
 	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
 	var _react = __webpack_require__(1);
 	
 	var _react2 = _interopRequireDefault(_react);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	exports.default = function (props) {
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	  return _react2.default.createElement(
-	    "div",
-	    { id: "div_field" },
-	    _react2.default.createElement(
-	      "form",
-	      { onSubmit: props.handleSubmit },
-	      _react2.default.createElement("input", {
-	        type: "text",
-	        value: props.holdtext,
-	        onChange: props.writeText,
-	        className: "input-field",
-	        style: { opacity: props.disappearText },
-	        autoFocus: true }),
-	      _react2.default.createElement("input", { type: "submit", tabIndex: "-1" })
-	    )
-	  );
-	};
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Field = function (_React$Component) {
+	  _inherits(Field, _React$Component);
+	
+	  function Field(props) {
+	    _classCallCheck(this, Field);
+	
+	    var _this = _possibleConstructorReturn(this, (Field.__proto__ || Object.getPrototypeOf(Field)).call(this, props));
+	
+	    _this.focus = _this.focus.bind(_this);
+	    return _this;
+	  }
+	
+	  _createClass(Field, [{
+	    key: "focus",
+	    value: function focus() {
+	      this.textInput.focus();
+	    }
+	  }, {
+	    key: "render",
+	    value: function render() {
+	      var _this2 = this;
+	
+	      return _react2.default.createElement(
+	        "div",
+	        { id: "div_field" },
+	        _react2.default.createElement(
+	          "form",
+	          { onSubmit: this.props.handleSubmit },
+	          _react2.default.createElement("input", {
+	            type: "text",
+	            value: this.props.holdtext,
+	            onChange: this.props.writeText,
+	            className: "input-field",
+	            style: { opacity: this.props.disappearText },
+	            ref: function ref(input) {
+	              _this2.textInput = input;
+	            } }),
+	          _react2.default.createElement("input", { type: "submit", tabIndex: "-1" })
+	        )
+	      );
+	    }
+	  }]);
+	
+	  return Field;
+	}(_react2.default.Component);
+	
+	exports.default = Field;
 
 /***/ },
 /* 236 */
@@ -49567,17 +49612,9 @@
 	  }, {
 	    key: 'oneAtATime',
 	    value: function oneAtATime() {
-	      // str.split('').reduce((prev, curr) => {
-	      //   setTimeout(function() {
-	      //     console.log('prev', prev)
-	      //     prev = prev.concat(curr)
-	      //     console.log('prev ', prev)
-	      //     this.setState({ displayText: prev })
-	      //   }.bind(this), 0)
-	      //   return prev
 	
-	      // }, this.state.displayText)
 	      var text = document.getElementsByClassName('notate-enter-active');
+	      console.log('TEXT ', text);
 	      var millSec = _tone2.default.Time('16n').toMilliseconds();
 	      for (var x = 0; x < text.length; x++) {
 	        text[x].style.transitionDelay = millSec * x + 'ms';
@@ -49632,8 +49669,6 @@
 	          }
 	        }
 	      });
-	
-	      // console.log('display ', display)
 	
 	      this.oneAtATime();
 	

@@ -24,17 +24,9 @@ componentWillReceiveProps(nextProps) {
 }
 
 oneAtATime() {
-  // str.split('').reduce((prev, curr) => {
-  //   setTimeout(function() {
-  //     console.log('prev', prev)
-  //     prev = prev.concat(curr)
-  //     console.log('prev ', prev)
-  //     this.setState({ displayText: prev })
-  //   }.bind(this), 0)
-  //   return prev
 
-  // }, this.state.displayText)
   let text = document.getElementsByClassName('notate-enter-active')
+  console.log('TEXT ', text)
   let millSec = Tone.Time('16n').toMilliseconds()
   for (let x = 0; x < text.length; x++) {
       text[x].style.transitionDelay = `${millSec*x}ms`
@@ -85,10 +77,8 @@ console.log('LOCAL STATE ', this.state)
 
   })
 
-// console.log('display ', display)
 
-this.oneAtATime()
-
+  this.oneAtATime()
 
 return (
     <div id="div_screen">

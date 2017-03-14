@@ -503,7 +503,10 @@ select {
 div.letters {
   display: inline;
   color: darkgrey;
-  font-size: 3em; }
+  font-size: 3em;
+}
+
+
 
 .div_transition {
   height: 100%; }
@@ -512,7 +515,7 @@ div.underline {
   display: inline;
   background-image: url("/img/rednote.png");
   font-size: 3em;
-  /* transition: color 1s ease-in; */ }
+}
 
 div.underline2 {
   display: inline;
@@ -526,6 +529,18 @@ div.underline2 {
   opacity: 1;
   transition: opacity 500ms  ease-in; }
 
+/*.notate-enter.notate-enter-active:nth-child(1) {
+  opacity: 1;
+  transition: opacity 500ms  ease-in; }
+
+.notate-enter.notate-enter-active:nth-child(2) {
+  opacity: 1;
+  transition: opacity 500ms  ease-in; }
+
+.notate-enter.notate-enter-active:nth-child() {
+  opacity: 1;
+  transition: opacity 500ms  ease-in; }
+*/
 .notate-leave {
   opacity: 1; }
 
