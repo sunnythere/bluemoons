@@ -60,19 +60,19 @@
 	
 	var _Main2 = _interopRequireDefault(_Main);
 	
-	var _Field = __webpack_require__(235);
+	var _Field = __webpack_require__(236);
 	
 	var _Field2 = _interopRequireDefault(_Field);
 	
-	var _Voices = __webpack_require__(236);
+	var _Voices = __webpack_require__(237);
 	
 	var _Voices2 = _interopRequireDefault(_Voices);
 	
-	var _Screen = __webpack_require__(238);
+	var _Screen = __webpack_require__(239);
 	
 	var _Screen2 = _interopRequireDefault(_Screen);
 	
-	var _Book = __webpack_require__(252);
+	var _Book = __webpack_require__(253);
 	
 	var _Book2 = _interopRequireDefault(_Book);
 	
@@ -26578,37 +26578,37 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _startaudiocontext = __webpack_require__(254);
+	var _startaudiocontext = __webpack_require__(234);
 	
 	var _startaudiocontext2 = _interopRequireDefault(_startaudiocontext);
 	
 	var _reactRouter = __webpack_require__(178);
 	
-	var _tone = __webpack_require__(234);
+	var _tone = __webpack_require__(235);
 	
 	var _tone2 = _interopRequireDefault(_tone);
 	
-	var _Field = __webpack_require__(235);
+	var _Field = __webpack_require__(236);
 	
 	var _Field2 = _interopRequireDefault(_Field);
 	
-	var _Voices = __webpack_require__(236);
+	var _Voices = __webpack_require__(237);
 	
 	var _Voices2 = _interopRequireDefault(_Voices);
 	
-	var _BPM = __webpack_require__(237);
+	var _BPM = __webpack_require__(238);
 	
 	var _BPM2 = _interopRequireDefault(_BPM);
 	
-	var _Screen = __webpack_require__(238);
+	var _Screen = __webpack_require__(239);
 	
 	var _Screen2 = _interopRequireDefault(_Screen);
 	
-	var _Book = __webpack_require__(252);
+	var _Book = __webpack_require__(253);
 	
 	var _Book2 = _interopRequireDefault(_Book);
 	
-	var _Pattern = __webpack_require__(253);
+	var _Pattern = __webpack_require__(254);
 	
 	var _Pattern2 = _interopRequireDefault(_Pattern);
 	
@@ -26670,7 +26670,9 @@
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
 	      this.textInput.focus();
-	      (0, _startaudiocontext2.default)(_tone2.default.context, '#input-field');
+	      (0, _startaudiocontext2.default)(_tone2.default.context, '#input-field').then(function () {
+	        console.log('hey');
+	      });
 	    }
 	
 	    /* ---------------words to music notation-----------------*/
@@ -27141,6 +27143,196 @@
 
 /***/ },
 /* 234 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
+	 *  StartAudioContext.js
+	 *  @author Yotam Mann
+	 *  @license http://opensource.org/licenses/MIT MIT License
+	 *  @copyright 2016 Yotam Mann
+	 */
+	(function (root, factory) {
+		if (true) {
+			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))
+		 } else if (typeof module === "object" && module.exports) {
+	        module.exports = factory()
+		} else {
+			root.StartAudioContext = factory()
+	  }
+	}(this, function () {
+	
+		//TAP LISTENER/////////////////////////////////////////////////////////////
+	
+		/**
+		 * @class  Listens for non-dragging tap ends on the given element
+		 * @param {Element} element
+		 * @internal
+		 */
+		var TapListener = function(element, context){
+	
+			this._dragged = false
+	
+			this._element = element
+	
+			this._bindedMove = this._moved.bind(this)
+			this._bindedEnd = this._ended.bind(this, context)
+	
+			element.addEventListener("touchmove", this._bindedMove)
+			element.addEventListener("touchend", this._bindedEnd)
+			element.addEventListener("mouseup", this._bindedEnd)
+		}
+	
+		/**
+		 * drag move event
+		 */
+		TapListener.prototype._moved = function(e){
+			this._dragged = true
+		};
+	
+		/**
+		 * tap ended listener
+		 */
+		TapListener.prototype._ended = function(context){
+			if (!this._dragged){
+				startContext(context)
+			}
+			this._dragged = false
+		};
+	
+		/**
+		 * remove all the bound events
+		 */
+		TapListener.prototype.dispose = function(){
+			this._element.removeEventListener("touchmove", this._bindedMove)
+			this._element.removeEventListener("touchend", this._bindedEnd)
+			this._element.removeEventListener("mouseup", this._bindedEnd)
+			this._bindedMove = null
+			this._bindedEnd = null
+			this._element = null
+		};
+	
+		//END TAP LISTENER/////////////////////////////////////////////////////////
+	
+		/**
+		 * Plays a silent sound and also invoke the "resume" method
+		 * @param {AudioContext} context
+		 * @private
+		 */
+		function startContext(context){
+			// this accomplishes the iOS specific requirement
+			var buffer = context.createBuffer(1, 1, context.sampleRate)
+			var source = context.createBufferSource()
+			source.buffer = buffer
+			source.connect(context.destination)
+			source.start(0)
+	
+			// resume the audio context
+			if (context.resume){
+				context.resume()
+			}
+		}
+	
+		/**
+		 * Returns true if the audio context is started
+		 * @param  {AudioContext}  context
+		 * @return {Boolean}
+		 * @private
+		 */
+		function isStarted(context){
+			 return context.state === "running"
+		}
+	
+		/**
+		 * Invokes the callback as soon as the AudioContext
+		 * is started
+		 * @param  {AudioContext}   context
+		 * @param  {Function} callback
+		 */
+		function onStarted(context, callback){
+	
+			function checkLoop(){
+				if (isStarted(context)){
+					callback()
+				} else {
+					requestAnimationFrame(checkLoop)
+					if (context.resume){
+						context.resume()
+					}
+				}
+			}
+	
+			if (isStarted(context)){
+				callback()
+			} else {
+				checkLoop()
+			}
+		}
+	
+		/**
+		 * Add a tap listener to the audio context
+		 * @param  {Array|Element|String|jQuery} element
+		 * @param {Array} tapListeners
+		 */
+		function bindTapListener(element, tapListeners, context){
+			if (Array.isArray(element) || (NodeList && element instanceof NodeList)){
+				for (var i = 0; i < element.length; i++){
+					bindTapListener(element[i], tapListeners, context)
+				}
+			} else if (typeof element === "string"){
+				bindTapListener(document.querySelectorAll(element), tapListeners, context)
+			} else if (element.jquery && typeof element.toArray === "function"){
+				bindTapListener(element.toArray(), tapListeners, context)
+			} else if (Element && element instanceof Element){
+				//if it's an element, create a TapListener
+				var tap = new TapListener(element, context)
+				tapListeners.push(tap)
+			} 
+		}
+	
+		/**
+		 * @param {AudioContext} context The AudioContext to start.
+		 * @param {Array|String|Element|jQuery} elements For iOS, the list of elements
+		 *                                               to bind tap event listeners
+		 *                                               which will start the AudioContext.
+		 * @param {Function=} callback The callback to invoke when the AudioContext is started.
+		 * @return {Promise} The promise is invoked when the AudioContext
+		 *                       is started.
+		 */
+		function StartAudioContext(context, elements, callback){
+	
+			//the promise is invoked when the AudioContext is started
+			var promise = new Promise(function(success) {
+				onStarted(context, success)
+			})
+	
+			// The TapListeners bound to the elements
+			var tapListeners = []
+	
+			// add all the tap listeners
+			if (elements){
+				bindTapListener(elements, tapListeners, context)
+			}
+	
+			//dispose all these tap listeners when the context is started
+			promise.then(function(){
+				for (var i = 0; i < tapListeners.length; i++){
+					tapListeners[i].dispose()
+				}
+				tapListeners = null
+	
+				if (callback){
+					callback()
+				}
+			})
+	
+			return promise
+		}
+	
+		return StartAudioContext
+	}))
+
+/***/ },
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;(function(root, factory){
@@ -49359,7 +49551,7 @@
 	}));
 
 /***/ },
-/* 235 */
+/* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -49432,7 +49624,7 @@
 	exports.default = Field;
 
 /***/ },
-/* 236 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -49498,7 +49690,7 @@
 	};
 
 /***/ },
-/* 237 */
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -49550,7 +49742,7 @@
 	};
 
 /***/ },
-/* 238 */
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -49565,11 +49757,11 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactAddonsCssTransitionGroup = __webpack_require__(239);
+	var _reactAddonsCssTransitionGroup = __webpack_require__(240);
 	
 	var _reactAddonsCssTransitionGroup2 = _interopRequireDefault(_reactAddonsCssTransitionGroup);
 	
-	var _tone = __webpack_require__(234);
+	var _tone = __webpack_require__(235);
 	
 	var _tone2 = _interopRequireDefault(_tone);
 	
@@ -49687,13 +49879,13 @@
 	exports.default = Screen;
 
 /***/ },
-/* 239 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(240);
+	module.exports = __webpack_require__(241);
 
 /***/ },
-/* 240 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -49718,8 +49910,8 @@
 	
 	var React = __webpack_require__(2);
 	
-	var ReactTransitionGroup = __webpack_require__(241);
-	var ReactCSSTransitionGroupChild = __webpack_require__(244);
+	var ReactTransitionGroup = __webpack_require__(242);
+	var ReactCSSTransitionGroupChild = __webpack_require__(245);
 	
 	function createTransitionTimeoutPropValidator(transitionType) {
 	  var timeoutPropName = 'transition' + transitionType + 'Timeout';
@@ -49802,7 +49994,7 @@
 	module.exports = ReactCSSTransitionGroup;
 
 /***/ },
-/* 241 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -49826,7 +50018,7 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
 	var React = __webpack_require__(2);
-	var ReactTransitionChildMapping = __webpack_require__(242);
+	var ReactTransitionChildMapping = __webpack_require__(243);
 	
 	var emptyFunction = __webpack_require__(12);
 	
@@ -50035,7 +50227,7 @@
 	module.exports = ReactTransitionGroup;
 
 /***/ },
-/* 242 */
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -50050,7 +50242,7 @@
 	
 	'use strict';
 	
-	var flattenChildren = __webpack_require__(243);
+	var flattenChildren = __webpack_require__(244);
 	
 	var ReactTransitionChildMapping = {
 	  /**
@@ -50143,7 +50335,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 243 */
+/* 244 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -50224,7 +50416,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 244 */
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -50240,10 +50432,10 @@
 	'use strict';
 	
 	var React = __webpack_require__(2);
-	var ReactAddonsDOMDependencies = __webpack_require__(245);
+	var ReactAddonsDOMDependencies = __webpack_require__(246);
 	
-	var CSSCore = __webpack_require__(250);
-	var ReactTransitionEvents = __webpack_require__(251);
+	var CSSCore = __webpack_require__(251);
+	var ReactTransitionEvents = __webpack_require__(252);
 	
 	var onlyChild = __webpack_require__(31);
 	
@@ -50395,7 +50587,7 @@
 	module.exports = ReactCSSTransitionGroupChild;
 
 /***/ },
-/* 245 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -50422,14 +50614,14 @@
 	
 	  exports.getReactPerf = function () {
 	    if (!ReactPerf) {
-	      ReactPerf = __webpack_require__(246);
+	      ReactPerf = __webpack_require__(247);
 	    }
 	    return ReactPerf;
 	  };
 	
 	  exports.getReactTestUtils = function () {
 	    if (!ReactTestUtils) {
-	      ReactTestUtils = __webpack_require__(247);
+	      ReactTestUtils = __webpack_require__(248);
 	    }
 	    return ReactTestUtils;
 	  };
@@ -50437,7 +50629,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 246 */
+/* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -50943,7 +51135,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 247 */
+/* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -50961,7 +51153,7 @@
 	var _prodInvariant = __webpack_require__(35),
 	    _assign = __webpack_require__(4);
 	
-	var EventConstants = __webpack_require__(248);
+	var EventConstants = __webpack_require__(249);
 	var EventPluginHub = __webpack_require__(42);
 	var EventPluginRegistry = __webpack_require__(43);
 	var EventPropagators = __webpack_require__(41);
@@ -50972,7 +51164,7 @@
 	var ReactInstanceMap = __webpack_require__(116);
 	var ReactUpdates = __webpack_require__(56);
 	var SyntheticEvent = __webpack_require__(53);
-	var ReactShallowRenderer = __webpack_require__(249);
+	var ReactShallowRenderer = __webpack_require__(250);
 	
 	var findDOMNode = __webpack_require__(172);
 	var invariant = __webpack_require__(8);
@@ -51360,7 +51552,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 248 */
+/* 249 */
 /***/ function(module, exports) {
 
 	/**
@@ -51456,7 +51648,7 @@
 	module.exports = EventConstants;
 
 /***/ },
-/* 249 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -51596,7 +51788,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 250 */
+/* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -51723,7 +51915,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 251 */
+/* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -51800,7 +51992,7 @@
 	module.exports = ReactTransitionEvents;
 
 /***/ },
-/* 252 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -51854,7 +52046,7 @@
 	};
 
 /***/ },
-/* 253 */
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -51906,196 +52098,6 @@
 	    )
 	  );
 	};
-
-/***/ },
-/* 254 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
-	 *  StartAudioContext.js
-	 *  @author Yotam Mann
-	 *  @license http://opensource.org/licenses/MIT MIT License
-	 *  @copyright 2016 Yotam Mann
-	 */
-	(function (root, factory) {
-		if (true) {
-			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))
-		 } else if (typeof module === "object" && module.exports) {
-	        module.exports = factory()
-		} else {
-			root.StartAudioContext = factory()
-	  }
-	}(this, function () {
-	
-		//TAP LISTENER/////////////////////////////////////////////////////////////
-	
-		/**
-		 * @class  Listens for non-dragging tap ends on the given element
-		 * @param {Element} element
-		 * @internal
-		 */
-		var TapListener = function(element, context){
-	
-			this._dragged = false
-	
-			this._element = element
-	
-			this._bindedMove = this._moved.bind(this)
-			this._bindedEnd = this._ended.bind(this, context)
-	
-			element.addEventListener("touchmove", this._bindedMove)
-			element.addEventListener("touchend", this._bindedEnd)
-			element.addEventListener("mouseup", this._bindedEnd)
-		}
-	
-		/**
-		 * drag move event
-		 */
-		TapListener.prototype._moved = function(e){
-			this._dragged = true
-		};
-	
-		/**
-		 * tap ended listener
-		 */
-		TapListener.prototype._ended = function(context){
-			if (!this._dragged){
-				startContext(context)
-			}
-			this._dragged = false
-		};
-	
-		/**
-		 * remove all the bound events
-		 */
-		TapListener.prototype.dispose = function(){
-			this._element.removeEventListener("touchmove", this._bindedMove)
-			this._element.removeEventListener("touchend", this._bindedEnd)
-			this._element.removeEventListener("mouseup", this._bindedEnd)
-			this._bindedMove = null
-			this._bindedEnd = null
-			this._element = null
-		};
-	
-		//END TAP LISTENER/////////////////////////////////////////////////////////
-	
-		/**
-		 * Plays a silent sound and also invoke the "resume" method
-		 * @param {AudioContext} context
-		 * @private
-		 */
-		function startContext(context){
-			// this accomplishes the iOS specific requirement
-			var buffer = context.createBuffer(1, 1, context.sampleRate)
-			var source = context.createBufferSource()
-			source.buffer = buffer
-			source.connect(context.destination)
-			source.start(0)
-	
-			// resume the audio context
-			if (context.resume){
-				context.resume()
-			}
-		}
-	
-		/**
-		 * Returns true if the audio context is started
-		 * @param  {AudioContext}  context
-		 * @return {Boolean}
-		 * @private
-		 */
-		function isStarted(context){
-			 return context.state === "running"
-		}
-	
-		/**
-		 * Invokes the callback as soon as the AudioContext
-		 * is started
-		 * @param  {AudioContext}   context
-		 * @param  {Function} callback
-		 */
-		function onStarted(context, callback){
-	
-			function checkLoop(){
-				if (isStarted(context)){
-					callback()
-				} else {
-					requestAnimationFrame(checkLoop)
-					if (context.resume){
-						context.resume()
-					}
-				}
-			}
-	
-			if (isStarted(context)){
-				callback()
-			} else {
-				checkLoop()
-			}
-		}
-	
-		/**
-		 * Add a tap listener to the audio context
-		 * @param  {Array|Element|String|jQuery} element
-		 * @param {Array} tapListeners
-		 */
-		function bindTapListener(element, tapListeners, context){
-			if (Array.isArray(element) || (NodeList && element instanceof NodeList)){
-				for (var i = 0; i < element.length; i++){
-					bindTapListener(element[i], tapListeners, context)
-				}
-			} else if (typeof element === "string"){
-				bindTapListener(document.querySelectorAll(element), tapListeners, context)
-			} else if (element.jquery && typeof element.toArray === "function"){
-				bindTapListener(element.toArray(), tapListeners, context)
-			} else if (Element && element instanceof Element){
-				//if it's an element, create a TapListener
-				var tap = new TapListener(element, context)
-				tapListeners.push(tap)
-			} 
-		}
-	
-		/**
-		 * @param {AudioContext} context The AudioContext to start.
-		 * @param {Array|String|Element|jQuery} elements For iOS, the list of elements
-		 *                                               to bind tap event listeners
-		 *                                               which will start the AudioContext.
-		 * @param {Function=} callback The callback to invoke when the AudioContext is started.
-		 * @return {Promise} The promise is invoked when the AudioContext
-		 *                       is started.
-		 */
-		function StartAudioContext(context, elements, callback){
-	
-			//the promise is invoked when the AudioContext is started
-			var promise = new Promise(function(success) {
-				onStarted(context, success)
-			})
-	
-			// The TapListeners bound to the elements
-			var tapListeners = []
-	
-			// add all the tap listeners
-			if (elements){
-				bindTapListener(elements, tapListeners, context)
-			}
-	
-			//dispose all these tap listeners when the context is started
-			promise.then(function(){
-				for (var i = 0; i < tapListeners.length; i++){
-					tapListeners[i].dispose()
-				}
-				tapListeners = null
-	
-				if (callback){
-					callback()
-				}
-			})
-	
-			return promise
-		}
-	
-		return StartAudioContext
-	}))
 
 /***/ }
 /******/ ]);

@@ -54,7 +54,9 @@ constructor() {
 
 componentDidMount() {
   this.textInput.focus()
-  StartAudioContext(Tone.context, '#input-field')
+  StartAudioContext(Tone.context, '#input-field').then(function() {
+    console.log('hey')
+  })
 }
 
 /* ---------------words to music notation-----------------*/
