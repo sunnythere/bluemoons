@@ -1,5 +1,5 @@
 import React from 'react'
-// import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+import StartAudioContext from 'startaudiocontext'
 import { Link } from 'react-router'
 import Tone from 'tone'
 import Field from './Field';
@@ -18,6 +18,7 @@ constructor() {
   this.state = {
     holdtext: '',
     text: '',
+    placeholder: 'type + hit return',
     musicArr: [],
     bpm: 120,
     millSec: 0,
@@ -41,8 +42,6 @@ constructor() {
   this.togglePatternPanel = this.togglePatternPanel.bind(this)
   this.onChangeBPM = this.onChangeBPM.bind(this)
   this.onChangeVoice = this.onChangeVoice.bind(this)
-  //this.onSubmitVoice = this.onSubmitVoice.bind(this)
-  this.onChangePattern = this.onChangePattern.bind(this)
 
   this.stopTone = this.stopTone.bind(this)
   this.randomOctave = this.randomOctave.bind(this)
@@ -55,6 +54,7 @@ constructor() {
 
 componentDidMount() {
   this.textInput.focus()
+  StartAudioContext(Tone.context, '#input-field')
 }
 
 /* ---------------words to music notation-----------------*/
@@ -309,8 +309,6 @@ stopTone() {
 //   return harmonized
 // }
 
-/* ---------------visuals-----------------*/
-//Tone.Draw()
 
 /* ---------------event handlers-----------------*/
 
@@ -362,17 +360,6 @@ onChangeVoice(e) {
   }
 }
 
-// onSubmitVoice(e) {
-//   e.preventDefault()
-//   let voice = e.target.value
-//   this.setState({ voice: voice })
-// }
-
-onChangePattern() {
-
-}
-
-
 writeText(event) {
   this.setState({ holdtext: event.target.value });
 }
@@ -391,7 +378,10 @@ clearText() {
 handleSubmit(event) {
   event.preventDefault()
 
-  this.setState({ text: this.state.holdtext })
+  this.setState({
+    placeholder: '',
+    text: this.state.holdtext
+  })
   //translate string, feed it into synth constructor
   const notes = this.makeMusicNotes_Obj(this.state.holdtext)
   this.makeSynthPart(notes)
@@ -414,6 +404,7 @@ render() {
 
       <Field
         holdtext={this.state.holdtext}
+        placeholder={this.state.placeholder}
         handleSubmit={this.handleSubmit}
         writeText={this.writeText}
         disappearText={this.state.inputTextVis}

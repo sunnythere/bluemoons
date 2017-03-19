@@ -26578,6 +26578,10 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
+	var _startaudiocontext = __webpack_require__(254);
+	
+	var _startaudiocontext2 = _interopRequireDefault(_startaudiocontext);
+	
 	var _reactRouter = __webpack_require__(178);
 	
 	var _tone = __webpack_require__(234);
@@ -26615,8 +26619,6 @@
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	// import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
-	
 	
 	var Main = function (_React$Component) {
 	  _inherits(Main, _React$Component);
@@ -26629,6 +26631,7 @@
 	    _this.state = {
 	      holdtext: '',
 	      text: '',
+	      placeholder: 'type + hit return',
 	      musicArr: [],
 	      bpm: 120,
 	      millSec: 0,
@@ -26652,8 +26655,6 @@
 	    _this.togglePatternPanel = _this.togglePatternPanel.bind(_this);
 	    _this.onChangeBPM = _this.onChangeBPM.bind(_this);
 	    _this.onChangeVoice = _this.onChangeVoice.bind(_this);
-	    //this.onSubmitVoice = this.onSubmitVoice.bind(this)
-	    _this.onChangePattern = _this.onChangePattern.bind(_this);
 	
 	    _this.stopTone = _this.stopTone.bind(_this);
 	    _this.randomOctave = _this.randomOctave.bind(_this);
@@ -26669,6 +26670,7 @@
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
 	      this.textInput.focus();
+	      (0, _startaudiocontext2.default)(_tone2.default.context, '#input-field');
 	    }
 	
 	    /* ---------------words to music notation-----------------*/
@@ -26953,8 +26955,6 @@
 	    //   return harmonized
 	    // }
 	
-	    /* ---------------visuals-----------------*/
-	    //Tone.Draw()
 	
 	    /* ---------------event handlers-----------------*/
 	
@@ -27017,16 +27017,6 @@
 	          this.makeSynth();
 	      }
 	    }
-	
-	    // onSubmitVoice(e) {
-	    //   e.preventDefault()
-	    //   let voice = e.target.value
-	    //   this.setState({ voice: voice })
-	    // }
-	
-	  }, {
-	    key: 'onChangePattern',
-	    value: function onChangePattern() {}
 	  }, {
 	    key: 'writeText',
 	    value: function writeText(event) {
@@ -27050,7 +27040,10 @@
 	    value: function handleSubmit(event) {
 	      event.preventDefault();
 	
-	      this.setState({ text: this.state.holdtext });
+	      this.setState({
+	        placeholder: '',
+	        text: this.state.holdtext
+	      });
 	      //translate string, feed it into synth constructor
 	      var notes = this.makeMusicNotes_Obj(this.state.holdtext);
 	      this.makeSynthPart(notes);
@@ -27073,6 +27066,7 @@
 	        { id: 'div_main' },
 	        _react2.default.createElement(_Field2.default, {
 	          holdtext: this.state.holdtext,
+	          placeholder: this.state.placeholder,
 	          handleSubmit: this.handleSubmit,
 	          writeText: this.writeText,
 	          disappearText: this.state.inputTextVis,
@@ -49418,9 +49412,10 @@
 	          { onSubmit: this.props.handleSubmit },
 	          _react2.default.createElement("input", {
 	            type: "text",
+	            placeholder: this.props.placeholder,
 	            value: this.props.holdtext,
 	            onChange: this.props.writeText,
-	            className: "input-field",
+	            id: "input-field",
 	            style: { opacity: this.props.disappearText },
 	            ref: function ref(input) {
 	              _this2.textInput = input;
@@ -51911,6 +51906,196 @@
 	    )
 	  );
 	};
+
+/***/ },
+/* 254 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
+	 *  StartAudioContext.js
+	 *  @author Yotam Mann
+	 *  @license http://opensource.org/licenses/MIT MIT License
+	 *  @copyright 2016 Yotam Mann
+	 */
+	(function (root, factory) {
+		if (true) {
+			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))
+		 } else if (typeof module === "object" && module.exports) {
+	        module.exports = factory()
+		} else {
+			root.StartAudioContext = factory()
+	  }
+	}(this, function () {
+	
+		//TAP LISTENER/////////////////////////////////////////////////////////////
+	
+		/**
+		 * @class  Listens for non-dragging tap ends on the given element
+		 * @param {Element} element
+		 * @internal
+		 */
+		var TapListener = function(element, context){
+	
+			this._dragged = false
+	
+			this._element = element
+	
+			this._bindedMove = this._moved.bind(this)
+			this._bindedEnd = this._ended.bind(this, context)
+	
+			element.addEventListener("touchmove", this._bindedMove)
+			element.addEventListener("touchend", this._bindedEnd)
+			element.addEventListener("mouseup", this._bindedEnd)
+		}
+	
+		/**
+		 * drag move event
+		 */
+		TapListener.prototype._moved = function(e){
+			this._dragged = true
+		};
+	
+		/**
+		 * tap ended listener
+		 */
+		TapListener.prototype._ended = function(context){
+			if (!this._dragged){
+				startContext(context)
+			}
+			this._dragged = false
+		};
+	
+		/**
+		 * remove all the bound events
+		 */
+		TapListener.prototype.dispose = function(){
+			this._element.removeEventListener("touchmove", this._bindedMove)
+			this._element.removeEventListener("touchend", this._bindedEnd)
+			this._element.removeEventListener("mouseup", this._bindedEnd)
+			this._bindedMove = null
+			this._bindedEnd = null
+			this._element = null
+		};
+	
+		//END TAP LISTENER/////////////////////////////////////////////////////////
+	
+		/**
+		 * Plays a silent sound and also invoke the "resume" method
+		 * @param {AudioContext} context
+		 * @private
+		 */
+		function startContext(context){
+			// this accomplishes the iOS specific requirement
+			var buffer = context.createBuffer(1, 1, context.sampleRate)
+			var source = context.createBufferSource()
+			source.buffer = buffer
+			source.connect(context.destination)
+			source.start(0)
+	
+			// resume the audio context
+			if (context.resume){
+				context.resume()
+			}
+		}
+	
+		/**
+		 * Returns true if the audio context is started
+		 * @param  {AudioContext}  context
+		 * @return {Boolean}
+		 * @private
+		 */
+		function isStarted(context){
+			 return context.state === "running"
+		}
+	
+		/**
+		 * Invokes the callback as soon as the AudioContext
+		 * is started
+		 * @param  {AudioContext}   context
+		 * @param  {Function} callback
+		 */
+		function onStarted(context, callback){
+	
+			function checkLoop(){
+				if (isStarted(context)){
+					callback()
+				} else {
+					requestAnimationFrame(checkLoop)
+					if (context.resume){
+						context.resume()
+					}
+				}
+			}
+	
+			if (isStarted(context)){
+				callback()
+			} else {
+				checkLoop()
+			}
+		}
+	
+		/**
+		 * Add a tap listener to the audio context
+		 * @param  {Array|Element|String|jQuery} element
+		 * @param {Array} tapListeners
+		 */
+		function bindTapListener(element, tapListeners, context){
+			if (Array.isArray(element) || (NodeList && element instanceof NodeList)){
+				for (var i = 0; i < element.length; i++){
+					bindTapListener(element[i], tapListeners, context)
+				}
+			} else if (typeof element === "string"){
+				bindTapListener(document.querySelectorAll(element), tapListeners, context)
+			} else if (element.jquery && typeof element.toArray === "function"){
+				bindTapListener(element.toArray(), tapListeners, context)
+			} else if (Element && element instanceof Element){
+				//if it's an element, create a TapListener
+				var tap = new TapListener(element, context)
+				tapListeners.push(tap)
+			} 
+		}
+	
+		/**
+		 * @param {AudioContext} context The AudioContext to start.
+		 * @param {Array|String|Element|jQuery} elements For iOS, the list of elements
+		 *                                               to bind tap event listeners
+		 *                                               which will start the AudioContext.
+		 * @param {Function=} callback The callback to invoke when the AudioContext is started.
+		 * @return {Promise} The promise is invoked when the AudioContext
+		 *                       is started.
+		 */
+		function StartAudioContext(context, elements, callback){
+	
+			//the promise is invoked when the AudioContext is started
+			var promise = new Promise(function(success) {
+				onStarted(context, success)
+			})
+	
+			// The TapListeners bound to the elements
+			var tapListeners = []
+	
+			// add all the tap listeners
+			if (elements){
+				bindTapListener(elements, tapListeners, context)
+			}
+	
+			//dispose all these tap listeners when the context is started
+			promise.then(function(){
+				for (var i = 0; i < tapListeners.length; i++){
+					tapListeners[i].dispose()
+				}
+				tapListeners = null
+	
+				if (callback){
+					callback()
+				}
+			})
+	
+			return promise
+		}
+	
+		return StartAudioContext
+	}))
 
 /***/ }
 /******/ ]);

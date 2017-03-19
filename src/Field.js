@@ -19,9 +19,10 @@ export default class Field extends React.Component {
 
         <input
           type="text"
+          placeholder={this.props.placeholder}
           value={this.props.holdtext}
           onChange={this.props.writeText}
-          className="input-field"
+          id="input-field"
           style={{opacity: this.props.disappearText}}
           ref={(input) => { this.textInput = input }} />
 

@@ -405,7 +405,7 @@ template {
 /*-------------------------------------------------------*/
 
 body {
-  background-color: rgba(250, 248, 248, 0.9);
+  background-color: rgba(255, 255, 255, 0.9);
   font-family: 'Source Code Pro', monospace;
   font-size: 20px;
   text-align: center;
@@ -420,7 +420,7 @@ body {
 #div_field {
   padding-top: 5%; }
 
-input {
+#input-field {
   background-color: transparent;
   border: 0px none;
   font-size: 3em;
@@ -495,9 +495,9 @@ select {
   text-align: right;
 }
 #book_btn {
-  position: fixed
+  position: fixed;
   bottom: 0;
-  right: 20;
+  right: 0;
 }
 
 div.letters {
