@@ -466,9 +466,8 @@ render() {
 
       </div>
 
-      <div id="div_bookbtn">
-        <Link to="/book"><button id="book_btn" /></Link>
-      </div>
+
+        <Link to="/book"><a id="book_link">about</a></Link>
 
     </div>
   )

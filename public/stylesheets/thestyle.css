@@ -413,9 +413,25 @@ body {
   height: 100%;
   color: darkgrey; }
 
+p {
+  text-align: left;
+}
+
 #div_main {
   height: 100%;
-  display: block; }
+  min-height: 100vh;
+  display: block;
+}
+
+#div_book {
+  height: 100%;
+  width: 100%;
+  max-width: 800px;
+  padding: 2rem;
+  box-sizing: border-box;
+  display: block;
+  margin: 0.3rem auto;
+}
 
 #div_field {
   padding-top: 5%; }
@@ -491,13 +507,30 @@ select {
   display: block;
 }
 
-#div_bookbtn {
-  text-align: right;
-}
-#book_btn {
+#book_link {
   position: fixed;
-  bottom: 0;
-  right: 0;
+  bottom: 5px;
+  right: 5px;
+  height: auto;
+  width: auto;
+  color: grey;
+  font-size: 0.8rem;
+  text-decoration: underline;
+
+}
+
+.pic {
+  width: 90%;
+  text-align: center;
+  margin: 0.5rem auto;
+}
+.bookpic {
+  max-width: 100%;
+}
+
+
+
+
 }
 
 div.letters {

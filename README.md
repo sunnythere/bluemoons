@@ -1,5 +1,5 @@
 created for GH Stackathon Jan 2016
 
-still under construction
+text to music translation
 
 https://bluemoons2.herokuapp.com/
