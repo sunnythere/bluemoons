@@ -10,7 +10,7 @@
     "build": "webpack -w",
     "start": "nodemon server/index.js",
     "test": "mocha",
-    "deploy-heroku": "bin/deploy-heroku.sh",
+    "deploy-heroku": "bin/deploy-heroku.sh"
   },
   "author": "y.alice",
   "license": "ISC",
