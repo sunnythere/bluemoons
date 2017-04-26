@@ -9,7 +9,8 @@
   "scripts": {
     "build": "webpack -w",
     "start": "nodemon server/index.js",
-    "test": "mocha"
+    "test": "mocha",
+    "deploy-heroku": "bin/deploy-heroku.sh",
   },
   "author": "y.alice",
   "license": "ISC",
